@@ -1,0 +1,43 @@
+body {
+  font-family: "IBM Plex Sans", Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  padding: 20px;
+  background: #2D664C;
+  color: #E1FF7F;
+}
+
+.result {
+  color: green;
+}
+
+.result.error {
+  color: red;
+}
+
+.error-log {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin: 10px 20px;
+}
+
+.main {
+  display: flex;
+}
+
+#details .selected-details {
+  /* display: none; */
+}
+
+#list {
+  width: 30vw;
+  margin: 2vw;
+}
+
+#details {
+  width: 64vw;
+}

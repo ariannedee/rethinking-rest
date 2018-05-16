@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>GitHub Client</title>
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,400i" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>A sample GraphQL client</h1>
+      <h2></h2>
+    </header>
+    <div class="main">
+      <div id="list">
+        <section class="search">
+          <form>
+            <label>Search</label> <input type="text" />
+          </form>
+        </section>
+        <section>
+          <h1>My repositories</h1>
+          <ol class="repos">
+            
+          </ol>
+        </section>
+      </div>
+      <section id="details">
+        <h1>Repository details</h1>
+        <div class="no-selection">
+          <p>
+            Select a repo to view its details
+          </p>
+        </div>
+        <div class="selected-details">
+          <p>
+            Name: <span id="repoName"></span>
+          </p>
+          <p>
+            <button>Star</button>
+          </p>
+          <p>
+            Owner: <span id="repoOwner"></span>
+          </p>
+          <p>
+            # of commits: <span id="repoCommits"></span>
+          </p>
+          <p>
+            # of open issues: <span id="repoIssues"></span>
+          </p>
+          <p>
+            # of open PRs: <span id="repoPRs"></span>
+          </p>
+          <h2>Latest merged PRs</h2>
+          <p id="PRs">
+            None
+          </p>
+        </div>
+      </section>
+    </div>
+    <div class="error-log">
+      <h3>GraphQL error log</h3>
+      <p class="result">
+      </p>
+    </div>
+  </body>
+  <script src="index.js"></script>
+</html>

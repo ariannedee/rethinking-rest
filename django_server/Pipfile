@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+
+Django = "*"
+"graphene-django" = "*"
+"django-filter" = "*"
+
+
+[dev-packages]
+
+
+[requires]
+python_version = "3.6"
