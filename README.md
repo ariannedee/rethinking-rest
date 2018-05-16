@@ -1,19 +1,17 @@
 # Rethinking REST
-## A hands-on guide to GraphQL and queryable APIs
+### A hands-on guide to GraphQL and queryable APIs
 
-### Client
+## Client
 Requires a modern browser capable of running ES6 JavaScript
 
-### Node server
+## Node server
 Requires Node >= 8.9
-
-Uses Knex.js ORM
 
 `npm install` to install libraries
 
 `npm start` to run
 
-### Django server
+## Django server
 Requires Python 3.6 and Pipenv
 
 `pip install pipenv` if you don't already have Pipenv
