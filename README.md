@@ -11,6 +11,8 @@ Requires Node >= 8.9
 
 `npm start` to run
 
+`knex seed:run` to reset seed data
+
 ## Django server
 Requires Python 3.6 and Pipenv
 
@@ -20,4 +22,8 @@ Requires Python 3.6 and Pipenv
 
 `pipenv install` to install libraries
 
-`./manage.py runserver` to run
+`pipenv shell` to activate the virtual environment
+
+`python manage.py runserver` to run
+
+`python manage.py loaddata users books` to rest seed data

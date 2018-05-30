@@ -1,43 +1,46 @@
 body {
   font-family: "IBM Plex Sans", Helvetica, sans-serif;
+  font-weight: 400;
   margin: 0;
   padding: 0;
 }
 
 header {
-  padding: 20px;
-  background: #2D664C;
-  color: #E1FF7F;
+  padding: 10px 10vw;
+  background: #2B423C;
+  color: white;
+  height: 160px;
 }
 
-.result {
-  color: green;
+header h2 {
+  color: #8FD173;
 }
 
-.result.error {
-  color: red;
-}
-
-.error-log {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  margin: 10px 20px;
+header * {
+  font-weight: 300;
 }
 
 .main {
   display: flex;
+  flex-wrap: wrap;
+  padding: 10px 10vw;
+}
+
+#list, #details {
+  width: 50%;
+  min-width: 240px;
 }
 
 #details .selected-details {
-  /* display: none; */
+  display: none;
 }
 
-#list {
-  width: 30vw;
-  margin: 2vw;
+.bold {
+  font-weight: 700;
+  font-size: 1.1em;
+  color: #2B423C;
 }
 
-#details {
-  width: 64vw;
+button.star {
+  margin-left: 10px;
 }

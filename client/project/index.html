@@ -3,29 +3,22 @@
   <head>
     <meta charset="UTF-8">
     <title>GitHub Client</title>
-    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,400i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,400,600" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
   <body>
     <header>
-      <h1>A sample GraphQL client</h1>
+      <h1>Simple GitHub Client</h1>
       <h2></h2>
     </header>
     <div class="main">
-      <div id="list">
-        <section class="search">
-          <form>
-            <label>Search</label> <input type="text" />
-          </form>
-        </section>
-        <section>
-          <h1>My repositories</h1>
-          <ol class="repos">
-            
-          </ol>
-        </section>
-      </div>
+      <section id="list">
+        <h1>Repositories</h1>
+        <ol class="repos">
+          No repositories
+        </ol>
+      </section>
       <section id="details">
         <h1>Repository details</h1>
         <div class="no-selection">
@@ -34,35 +27,18 @@
           </p>
         </div>
         <div class="selected-details">
+          <span class="bold" id="repoName"></span><button class="star">Star</button>
           <p>
-            Name: <span id="repoName"></span>
+            <span id="repoCommits"></span> commits
           </p>
           <p>
-            <button>Star</button>
+            <span id="repoIssues"></span> open issues
           </p>
           <p>
-            Owner: <span id="repoOwner"></span>
-          </p>
-          <p>
-            # of commits: <span id="repoCommits"></span>
-          </p>
-          <p>
-            # of open issues: <span id="repoIssues"></span>
-          </p>
-          <p>
-            # of open PRs: <span id="repoPRs"></span>
-          </p>
-          <h2>Latest merged PRs</h2>
-          <p id="PRs">
-            None
+            <span id="repoPRs"></span> open PRs
           </p>
         </div>
       </section>
-    </div>
-    <div class="error-log">
-      <h3>GraphQL error log</h3>
-      <p class="result">
-      </p>
     </div>
   </body>
   <script src="index.js"></script>

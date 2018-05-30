@@ -4,7 +4,7 @@ exports.seed = function(knex, Promise) {
     .then(function(){
       return knex('book').del()
       .then(function(){
-        return knex('category').del()
+        return knex('hasRead').del()
         .then(function () {
           // Inserts seed entries
           return knex('user').insert([
@@ -37,35 +37,10 @@ exports.seed = function(knex, Promise) {
               {id: 20, title: 'Life of Pi', author: 'Yann Martel', fiction: true, publishedYear: 2001},
             ])
             .then(function() {
-              return knex('category').insert([
-                {userId: 1, bookId: 1, category: 'classic'},
-                {userId: 1, bookId: 2, category: 'classic'},
-                {userId: 1, bookId: 3, category: 'classic'},
-                {userId: 1, bookId: 4, category: 'classic'},
-                {userId: 1, bookId: 5, category: 'classic'},
-                {userId: 1, bookId: 6, category: 'autobiography'},
-                {userId: 1, bookId: 7, category: 'classic'},
-                {userId: 1, bookId: 8, category: 'classic'},
-                {userId: 1, bookId: 9, category: 'classic'},
-                {userId: 1, bookId: 10, category: 'classic'},
-                {userId: 1, bookId: 11, category: 'classic'},
-                {userId: 1, bookId: 12, category: 'classic'},
-                {userId: 1, bookId: 13, category: 'classic'},
-                {userId: 1, bookId: 14, category: 'classic'},
-                {userId: 1, bookId: 15, category: 'classic'},
-                {userId: 1, bookId: 16, category: 'classic'},
-                {userId: 1, bookId: 16, category: 'science fiction'},
-                {userId: 1, bookId: 17, category: 'mystery'},
-                {userId: 1, bookId: 18, category: 'classic'},
-                {userId: 1, bookId: 19, category: 'classic'},
-                {userId: 1, bookId: 19, category: 'horror'},
-              ])
-              .then(function() {
-                return knex('hasRead').insert([
-                  {userId: 2, bookId: 17, recommendation: 9},
-                  {userId: 2, bookId: 7, recommendation: 8}
-                ]);
-              });
+              return knex('hasRead').insert([
+                {userId: 2, bookId: 17, rating: 9},
+                {userId: 2, bookId: 7, rating: 8}
+              ]);
             });
           });
         });

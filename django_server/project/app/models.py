@@ -9,13 +9,10 @@ class Book(models.Model):
     published_year = models.IntegerField()
 
 
-class Category(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='categories')
-    user = models.ForeignKey(UserModel, on_delete=models.DO_NOTHING, related_name='categories')
-    category = models.CharField(max_length=50)
-
-
 class HasRead(models.Model):
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='has_read')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='read_by')
-    recommendation = models.IntegerField()
+    rating = models.IntegerField(null=True)
+
+    class Meta:
+        unique_together = (('user', 'book'),)
