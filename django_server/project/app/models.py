@@ -16,3 +16,23 @@ class HasRead(models.Model):
 
     class Meta:
         unique_together = (('user', 'book'),)
+
+
+def read_book(book_id, user_id, rating):
+    try:
+        book = Book.objects.get(id=book_id)
+    except:
+        ok = False
+        raise Exception(f'Book with id {book_id} doesn\'t exist')
+    try:
+        user = UserModel.objects.get(id=user_id)
+    except:
+        raise Exception(f'User with id {user_id} doesn\'t exist')
+
+    if rating < 0 or rating > 10:
+        raise Exception(f'Rating must be between 0 and 10')
+
+    hasRead, created = HasRead.objects.get_or_create(user=user, book=book)
+    hasRead.rating = rating
+    hasRead.save()
+    return hasRead
