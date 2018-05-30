@@ -1,4 +1,16 @@
-const commitFragment;
+var commitFragment = `
+fragment commitFragment on Repository {
+  ref(qualifiedName: "master") {
+    target {
+      ... on Commit {
+        history {
+          totalCount
+        }
+      }
+    }
+  }
+}
+`;
 
 const queryRepoList;
 
