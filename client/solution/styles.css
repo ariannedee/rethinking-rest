@@ -1,0 +1,46 @@
+body {
+  font-family: "IBM Plex Sans", Helvetica, sans-serif;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  padding: 10px 10vw;
+  background: #2B423C;
+  color: white;
+  height: 160px;
+}
+
+header h2 {
+  color: #8FD173;
+}
+
+header * {
+  font-weight: 300;
+}
+
+.main {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px 10vw;
+}
+
+#list, #details {
+  width: 50%;
+  min-width: 240px;
+}
+
+#details .selected-details {
+  display: none;
+}
+
+.bold {
+  font-weight: 700;
+  font-size: 1.1em;
+  color: #2B423C;
+}
+
+button.star {
+  margin-left: 10px;
+}

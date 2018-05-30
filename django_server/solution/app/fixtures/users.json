@@ -1,0 +1,50 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "username": "admin",
+      "email": "admin@test.com",
+      "password": "pbkdf2_sha256$100000$1PxsfQ0sfqLd$63k+IpPOItjBdAUtJtZmJyRM1XOUJQrMgRTchSDlrJ0=",
+      "is_superuser": true,
+      "is_staff": true,
+      "is_active": true
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "username": "me",
+      "email": "me@test.com",
+      "password": "pbkdf2_sha256$100000$1PxsfQ0sfqLd$63k+IpPOItjBdAUtJtZmJyRM1XOUJQrMgRTchSDlrJ0=",
+      "is_superuser": false,
+      "is_staff": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "username": "friend1",
+      "email": "friend1@test.com",
+      "password": "pbkdf2_sha256$100000$1PxsfQ0sfqLd$63k+IpPOItjBdAUtJtZmJyRM1XOUJQrMgRTchSDlrJ0=",
+      "is_superuser": false,
+      "is_staff": false,
+      "is_active": true
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "username": "friend2",
+      "email": "friend2@test.com",
+      "password": "pbkdf2_sha256$100000$1PxsfQ0sfqLd$63k+IpPOItjBdAUtJtZmJyRM1XOUJQrMgRTchSDlrJ0=",
+      "is_superuser": false,
+      "is_staff": false,
+      "is_active": true
+    }
+  }
+]
