@@ -13,19 +13,30 @@ fragment commitFragment on Repository {
 `;
 
 var queryRepoList = `
-  {
+{
     viewer {
       name
-      repositories (first: 100) {
+      repositories (first: 100, orderBy: {field: CREATED_AT, direction: DESC}) {
         nodes {
           name
+          id
         }
       }
     }
   }
 `;
 
-var queryRepoSummary;
+var queryRepoSummary = `
+query ($id: ID!) {
+    node (id: $id){
+      ... on Repository {
+        name
+        nameWithOwner
+        ... commitFragment
+      }
+    }
+  }
+` + commitFragment;
 
 var mutationAddStar;
 
@@ -50,7 +61,13 @@ function gqlRequest(query, variables, onSuccess) {
 
 function showDetails(element) {
     // GET NAME AND SUMMARY FOR REPOSITORY
-
+    gqlRequest(queryRepoSummary, {id: element.id}, (response) => {
+        console.log(response);
+        $(".no-selection").hide();
+        $(".selected-details").show();
+        $("#repoName").text(response.data.node.name);
+        $("#repoCommits").text(response.data.node.ref.target.history.totalCount);
+    })
 }
 
 $(window).ready(function() {
@@ -62,7 +79,7 @@ $(window).ready(function() {
         let ol = $("ol.repos");
         ol.empty();
         viewer.repositories.nodes.forEach((repo) => {
-            let li = `<li>${repo.name}</li>`;
+            let li = `<li id=${repo.id} onClick=showDetails(this)>${repo.name}</li>`;
             ol.append(li);
         })
     });
