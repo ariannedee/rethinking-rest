@@ -75,7 +75,7 @@ function gqlRequest(query, variables, onSuccess) {
         url: "https://api.github.com/graphql",
         contentType: "application/json",
         headers: {
-            Authorization: "bearer c203893ce0c6b37b3d85734408d09d35361ab345"
+            Authorization: "bearer ..."
         },
         data: JSON.stringify({query: query, variables: variables}),
         success: onSuccess,
