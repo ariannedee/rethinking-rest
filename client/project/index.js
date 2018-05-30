@@ -12,13 +12,13 @@ fragment commitFragment on Repository {
 }
 `;
 
-const queryRepoList;
+var queryRepoList;
 
-const queryRepoSummary;
+var queryRepoSummary;
 
-const mutationAddStar;
+var mutationAddStar;
 
-const mutationRemoveStar;
+var mutationRemoveStar;
 
 function gqlRequest(query, variables, onSuccess) {
     // MAKE GRAPHQL REQUEST
