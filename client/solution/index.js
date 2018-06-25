@@ -16,111 +16,105 @@ fragment commitFragment on Repository {
 `;
 
 const queryRepoList = `
-query($login: String!){
-  user(login: $login) {
+{
+  viewer {
     name
-    repositories: repositoriesContributedTo(first: 10, orderBy: {field: CREATED_AT, direction: DESC}) {
+		repos: repositoriesContributedTo (first: 10, orderBy: {field: CREATED_AT, direction: DESC}) {
+      totalCount
       nodes {
         name
-		    id
-		    issues (states: OPEN) {
-			    totalCount
-		    }
-		    pullRequests (states: OPEN) {
-			    totalCount
+        id
+        starred: viewerHasStarred
+        pullRequests (states: OPEN) {
+          totalCount
+        }
+        issues (states: OPEN) {
+          totalCount
         }
         ... commitFragment
-        starred: viewerHasStarred
       }
-    }
+    }    
   }
-}
-` + commitFragment;
+}` + commitFragment;
 
 const mutationAddStar = `
-mutation ($id: ID!){
-  addStar(input: {starrableId: $id}) {
+mutation addStar ($id: ID!) {
+  addStar (input: {starrableId: $id}) {
     starrable {
       ... on Repository {
         name
-        starred: viewerHasStarred
+        viewerHasStarred
       }
     }
   }
-}
-`;
+}`;
 
 const mutationRemoveStar = `
-mutation ($id: ID!){
-  removeStar(input: {starrableId: $id}) {
+mutation removeStar ($id: ID!) {
+  removeStar (input: {starrableId: $id}) {
     starrable {
       ... on Repository {
         name
-        starred: viewerHasStarred
+        viewerHasStarred
       }
     }
   }
-}
-`;
+}`;
 
 function gqlRequest(query, variables, onSuccess) {
+  // MAKE GRAPHQL REQUEST
   $.post({
     url: "https://api.github.com/graphql",
-    contentType: "application/json",
     headers: {
       Authorization: "bearer ..."
     },
-    data: JSON.stringify({query: query, variables: variables}),
-    success: onSuccess,
+    contentType: "application/json",
+    data: JSON.stringify({
+      query: query,
+      variables: variables
+    }),
+    success: (response) => {
+      if (response.errors) {
+        console.log(response.errors);
+      } else {
+        onSuccess(response);
+      }
+    },
     error: (error) => console.log(error)
   });
 }
 
 function starHandler(element) {
-  if ($(element).text()===emptyStar){
-    gqlRequest(
-      mutationAddStar, 
-      {id: element.id}, 
-      () => $(element).text(fullStar)
-    );
+  // STAR OR UNSTAR REPO BASED ON ELEMENT STATE
+  if ($(element).text() === emptyStar) {
+    gqlRequest(mutationAddStar, {id: element.id}, () => $(element).text(fullStar));
   } else {
-    gqlRequest(
-      mutationRemoveStar, 
-      {id: element.id}, 
-      () => $(element).text(emptyStar)
-    );
+    gqlRequest(mutationRemoveStar, {id: element.id}, () => $(element).text(emptyStar));
   }
-};
+
+}
 
 $(window).ready(function() {
-  gqlRequest(
-    queryRepoList, 
-    {login: "ariannedee"},
+  // GET NAME AND REPOSITORIES FOR VIEWER
+  gqlRequest(queryRepoList, {},
     (response) => {
-      const user = response.data.user;
-      $("header h2").text(`Hello ${user.name}!`);
-      $("ul.repos").empty();
-      user.repositories.nodes.forEach((repo) => {
-        let commits = 0;
-        if (repo.ref) {
-          commits = repo.ref.target.history.totalCount;
-        }
-        let star;
-        if (repo.starred) {
-          star = fullStar;
-        } else {
-          star = emptyStar;
-        }
-        const content = `<h4>
+      $('header h2').text(`Hello ${response.data.viewer.name}`);
+      const repos = response.data.viewer.repos;
+      if (repos.totalCount > 0) {
+        $('ul').empty();
+      }
+      repos.nodes.forEach((repo) => {
+        const star = repo.starred? fullStar : emptyStar;
+        const card = `
+        <h3>
           ${repo.name}
-          <span class="star" id="${repo.id}" onClick="starHandler(this)">${star}</span>
-          </h4>
-          <p>${repo.issues.totalCount} issues</p>
-          <p>${repo.pullRequests.totalCount} pull requests</p>
-          <p>${commits} commits</p>
+          <span id=${repo.id} class="star" onClick="starHandler(this)">${star}</span>
+        </h3>
+        <p>${repo.pullRequests.totalCount} open PRs</p>
+        <p>${repo.issues.totalCount} open issues</p>
+        <p>${repo.ref.target.history.totalCount} commits</p>
         `;
-        $("ul.repos").append(`<li><div>${content}</div></li>`);
+        $("ul.repos").append(`<li><div>${card}</div></li>`)
       });
-    }
-  );
+    });
 });

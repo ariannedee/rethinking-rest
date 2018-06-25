@@ -27,14 +27,11 @@ function gqlRequest(query, variables, onSuccess) {
 }
 
 function starHandler(element) {
-  // GET NAME AND SUMMARY FOR REPOSITORY
+  // STAR OR UNSTAR REPO BASED ON ELEMENT STATE
 
 }
 
 $(window).ready(function() {
   // GET NAME AND REPOSITORIES FOR VIEWER
 
-  $("button.star").click((event) => {
-    // STAR OR UNSTAR SELECTED REPO
-  });
 });

@@ -49,6 +49,11 @@ ul li {
   border: solid 1px #8FD173;
   padding: 2px 10px;
   margin-bottom: 20px;
+  word-wrap: break-word;
+}
+
+ul li h3 {
+  font-size: 1.1rem;
 }
 
 @media (max-width: 900px) {
