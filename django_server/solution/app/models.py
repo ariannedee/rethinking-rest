@@ -10,7 +10,7 @@ class Book(models.Model):
 
 
 class HasRead(models.Model):
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='has_read')
+    user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='books_read')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='read_by')
     rating = models.IntegerField(null=True)
 

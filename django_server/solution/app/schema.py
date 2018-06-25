@@ -11,12 +11,12 @@ class UserType(graphene_django.DjangoObjectType):
     average_rating = graphene.Float()
 
     def resolve_average_rating(self, info):
-        query = self.has_read.all().aggregate(Avg('rating'))
-        return query['avg_rating']
+        query = self.books_read.all().aggregate(Avg('rating'))
+        return query['rating__avg']
 
     class Meta:
         model = UserModel
-        only_fields = ('id', 'username', 'has_read')
+        only_fields = ('id', 'username', 'books_read')
 
 
 class BookType(graphene_django.DjangoObjectType):
