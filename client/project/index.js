@@ -22,19 +22,19 @@ let mutationAddStar;
 let mutationRemoveStar;
 
 function gqlRequest(query, variables, onSuccess) {
-    // MAKE GRAPHQL REQUEST
+  // MAKE GRAPHQL REQUEST
 
 }
 
 function starHandler(element) {
-    // GET NAME AND SUMMARY FOR REPOSITORY
+  // GET NAME AND SUMMARY FOR REPOSITORY
 
 }
 
 $(window).ready(function() {
-    // GET NAME AND REPOSITORIES FOR VIEWER
+  // GET NAME AND REPOSITORIES FOR VIEWER
 
-    $("button.star").click((event) => {
-        // STAR OR UNSTAR SELECTED REPO
-    });
+  $("button.star").click((event) => {
+    // STAR OR UNSTAR SELECTED REPO
+  });
 });
