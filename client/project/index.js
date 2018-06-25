@@ -1,4 +1,7 @@
-var commitFragment = `
+const fullStar = "★";
+const emptyStar = "☆";
+
+const commitFragment = `
 fragment commitFragment on Repository {
   ref(qualifiedName: "master") {
     target {
@@ -12,20 +15,18 @@ fragment commitFragment on Repository {
 }
 `;
 
-var queryRepoList;
+let queryRepoList;
 
-var queryRepoSummary;
+let mutationAddStar;
 
-var mutationAddStar;
-
-var mutationRemoveStar;
+let mutationRemoveStar;
 
 function gqlRequest(query, variables, onSuccess) {
     // MAKE GRAPHQL REQUEST
 
 }
 
-function showDetails(element) {
+function starHandler(element) {
     // GET NAME AND SUMMARY FOR REPOSITORY
 
 }

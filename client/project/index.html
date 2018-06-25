@@ -12,34 +12,12 @@
       <h1>Simple GitHub Client</h1>
       <h2></h2>
     </header>
-    <div class="main">
-      <section id="list">
-        <h1>Repositories</h1>
-        <ol class="repos">
-          No repositories
-        </ol>
-      </section>
-      <section id="details">
-        <h1>Repository details</h1>
-        <div class="no-selection">
-          <p>
-            Select a repo to view its details
-          </p>
-        </div>
-        <div class="selected-details">
-          <span class="bold" id="repoName"></span><button class="star">Star</button>
-          <p>
-            <span id="repoCommits"></span> commits
-          </p>
-          <p>
-            <span id="repoIssues"></span> open issues
-          </p>
-          <p>
-            <span id="repoPRs"></span> open PRs
-          </p>
-        </div>
-      </section>
-    </div>
+    <section id="main">
+      <h1>Repositories</h1>
+      <ul class="repos">
+        No repositories
+      </ul>
+    </section>
   </body>
   <script src="index.js"></script>
 </html>

@@ -20,27 +20,45 @@ header * {
   font-weight: 300;
 }
 
-.main {
-  display: flex;
-  flex-wrap: wrap;
+section {
   padding: 10px 10vw;
 }
 
-#list, #details {
-  width: 50%;
-  min-width: 240px;
-}
-
-#details .selected-details {
-  display: none;
-}
-
-.bold {
-  font-weight: 700;
-  font-size: 1.1em;
-  color: #2B423C;
+.star {
+  margin-left: 10px;
+  font-size: 1em;
+  color: rgb(184, 133, 3);
+  cursor: pointer;
 }
 
 button.star {
   margin-left: 10px;
+}
+
+ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  justify-content: space-between;
+}
+
+ul li {
+  width: 30%;
+  border: solid 1px #8FD173;
+  padding: 2px 10px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  ul li {
+    width: 45%;
+  }
+}
+
+@media (max-width: 600px) {
+  ul li {
+    width: 100%;
+  }
 }

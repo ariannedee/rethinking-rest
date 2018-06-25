@@ -1,3 +1,6 @@
+const fullStar = "★";
+const emptyStar = "☆";
+
 const commitFragment = `
 fragment commitFragment on Repository {
   ref(qualifiedName: "master") {
@@ -19,25 +22,15 @@ query($login: String!){
     repositories: repositoriesContributedTo(first: 10, orderBy: {field: CREATED_AT, direction: DESC}) {
       nodes {
         name
-        id
-      }
-    }
-  }
-}
-`;
-
-const queryRepoSummary = `
-query ($id: ID!) {
-  node(id: $id) {
-    ... on Repository {
-      name: nameWithOwner
-      starred: viewerHasStarred
-      ...commitFragment
-      issues (states: OPEN) {
-        totalCount
-      }
-      pullRequests (states: OPEN) {
-        totalCount
+		    id
+		    issues (states: OPEN) {
+			    totalCount
+		    }
+		    pullRequests (states: OPEN) {
+			    totalCount
+        }
+        ... commitFragment
+        starred: viewerHasStarred
       }
     }
   }
@@ -71,68 +64,63 @@ mutation ($id: ID!){
 `;
 
 function gqlRequest(query, variables, onSuccess) {
-    $.post({
-        url: "https://api.github.com/graphql",
-        contentType: "application/json",
-        headers: {
-            Authorization: "bearer ..."
-        },
-        data: JSON.stringify({query: query, variables: variables}),
-        success: onSuccess,
-        error: (error) => console.log(error)
-    });
+  $.post({
+    url: "https://api.github.com/graphql",
+    contentType: "application/json",
+    headers: {
+      Authorization: "bearer f751b9e7084e37ea7a2e6eea6b9fa2baf310c5ca"
+    },
+    data: JSON.stringify({query: query, variables: variables}),
+    success: onSuccess,
+    error: (error) => console.log(error)
+  });
 }
 
-function showDetails(element) {
-    $(".selected-details").hide();
-    gqlRequest(queryRepoSummary, {id: element.id}, (response) => {
-        const repo = response.data.node;
-        $(".selected-details").show();
-        $(".no-selection").hide();
-        $("#repoName").text(repo.name);
-        let commits = 0;
-        if (repo.ref) {
-            commits = repo.ref.target.history.totalCount;
-        }
-        $("#repoCommits").text(commits);
-        $("#repoIssues").text(repo.issues.totalCount);
-        $("#repoPRs").text(repo.pullRequests.totalCount);
-        $("button.star").attr("id", element.id);
-        if (repo.starred) {
-            $("button.star").text("Unstar");
-        } else {
-            $("button.star").text("Star");
-        }
-    });
-}
+function starHandler(element) {
+  if ($(element).text()===emptyStar){
+    gqlRequest(
+      mutationAddStar, 
+      {id: element.id}, 
+      () => $(element).text(fullStar)
+    );
+  } else {
+    gqlRequest(
+      mutationRemoveStar, 
+      {id: element.id}, 
+      () => $(element).text(emptyStar)
+    );
+  }
+};
 
 $(window).ready(function() {
-    gqlRequest(
-        queryRepoList, 
-        {login: "ariannedee"},
-        (response) => {
-            const user = response.data.user;
-            $("header h2").text(`Hello ${user.name}!`);
-            $("ol.repos").empty();
-            user.repositories.nodes.forEach((repo) => {
-                $("ol.repos").append(`<li id="${repo.id}" onClick="showDetails(this)">${repo.name}</li>`);
-            });
+  gqlRequest(
+    queryRepoList, 
+    {login: "ariannedee"},
+    (response) => {
+      const user = response.data.user;
+      $("header h2").text(`Hello ${user.name}!`);
+      $("ul.repos").empty();
+      user.repositories.nodes.forEach((repo) => {
+        let commits = 0;
+        if (repo.ref) {
+          commits = repo.ref.target.history.totalCount;
         }
-    );
-
-    $("button.star").click((event) => {
-        if ($(this).text()==="Star"){
-            gqlRequest(
-                mutationAddStar, 
-                {id: this.id}, 
-                () => $("button.star").text("Unstar")
-            );
+        let star;
+        if (repo.starred) {
+          star = fullStar;
         } else {
-            gqlRequest(
-                mutationRemoveStar, 
-                {id: this.id}, 
-                () => $("button.star").text("Star")
-            );
+          star = emptyStar;
         }
-    });
+        const content = `<h4>
+          ${repo.name}
+          <span class="star" id="${repo.id}" onClick="starHandler(this)">${star}</span>
+          </h4>
+          <p>${repo.issues.totalCount} issues</p>
+          <p>${repo.pullRequests.totalCount} pull requests</p>
+          <p>${commits} commits</p>
+        `;
+        $("ul.repos").append(`<li><div>${content}</div></li>`);
+      });
+    }
+  );
 });
