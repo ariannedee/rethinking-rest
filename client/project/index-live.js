@@ -1,4 +1,7 @@
-var commitFragment = `
+const fullStar = "★";
+const emptyStar = "☆";
+
+const commitFragment = `
 fragment commitFragment on Repository {
   ref(qualifiedName: "master") {
     target {
@@ -12,28 +15,29 @@ fragment commitFragment on Repository {
 }
 `;
 
-var queryRepoList;
+let queryRepoList;
 
-var queryRepoSummary;
+let mutationAddStar;
 
-var mutationAddStar;
-
-var mutationRemoveStar;
+let mutationRemoveStar;
 
 function gqlRequest(query, variables, onSuccess) {
-    // MAKE GRAPHQL REQUEST
-
+  // MAKE GRAPHQL REQUEST
+  $.post({
+    url: "https://api.github.com/graphql",
+    contentType: "application/json",
+    headers: {
+      Authorization: "bearer ..."
+    }
+  });
 }
 
-function showDetails(element) {
-    // GET NAME AND SUMMARY FOR REPOSITORY
+function starHandler(element) {
+  // STAR OR UNSTAR REPO BASED ON ELEMENT STATE
 
 }
 
 $(window).ready(function() {
-    // GET NAME AND REPOSITORIES FOR VIEWER
+  // GET NAME AND REPOSITORIES FOR VIEWER
 
-    $("button.star").click((event) => {
-        // STAR OR UNSTAR SELECTED REPO
-    });
 });
