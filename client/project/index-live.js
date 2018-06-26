@@ -19,10 +19,16 @@ const queryRepoList = `
 {
   viewer {
 		name
-    repos: repositoriesContributedTo (first: 10) {
+    repos: repositoriesContributedTo (first: 10, orderBy: {field: CREATED_AT, direction: DESC}) {
       totalCount
       nodes {
         name
+        issues (states: OPEN) {
+          totalCount
+        }
+        pullRequests (states: OPEN) {
+          totalCount
+        }
       }
     }
   }
@@ -66,7 +72,12 @@ $(window).ready(function() {
       $("ul").empty();
     }
     repos.nodes.forEach((repo) => {
-      $("ul").append(`<li>${repo.name}</li>`);
+      let content = `
+      <h3>${repo.name}</h3>
+      <p>${repo.issues.totalCount} open issues</p>
+      <p>${repo.pullRequests.totalCount} open PRs</p>
+      `
+      $("ul").append(`<li>${content}</li>`);
     });
   });
 });
