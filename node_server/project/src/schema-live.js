@@ -1,4 +1,5 @@
 var graphql = require('graphql');
+var knex = require('../db');
 
 const UserType = new graphql.GraphQLObjectType({
   name: 'User',
@@ -20,7 +21,7 @@ var queryType = new graphql.GraphQLObjectType({
     users: {
       type: new graphql.GraphQLList(UserType),
       resolve(root, args, context) {
-        return [{id: 1, username: 'admin'}]
+        return knex('user');
       }
     }
   }
