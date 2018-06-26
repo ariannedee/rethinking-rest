@@ -1,6 +1,26 @@
 var graphql = require('graphql');
 var knex = require('../db');
 
+const HasReadType = new graphql.GraphQLObjectType({
+  name: 'HasRead',
+  fields: () => {
+    return {
+      rating: {
+        type: graphql.GraphQLInt,
+        resolve(hasRead) {
+          return hasRead.rating;
+        }
+      },
+      book: {
+        type: BookType,
+        resolve(hasRead) {
+          return knex('book').where('id', hasRead.bookId).first();
+        }
+      }
+    }
+  }
+})
+
 const UserType = new graphql.GraphQLObjectType({
   name: 'User',
   description: 'This represents a User',
@@ -23,6 +43,12 @@ const UserType = new graphql.GraphQLObjectType({
         return user.role === 'admin';
       }
     },
+    booksRead: {
+      type: graphql.GraphQLList(HasReadType),
+      resolve(user) {
+        return knex('hasRead').where('userId', user.id);
+      }
+    }
   }
 });
 
