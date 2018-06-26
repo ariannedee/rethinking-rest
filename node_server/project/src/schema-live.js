@@ -11,7 +11,18 @@ const UserType = new graphql.GraphQLObjectType({
         return user.id;
       }
     },
-
+    username: {
+      type: graphql.GraphQLString,
+      resolve(user) {
+        return user.username;
+      }
+    },
+    isAdmin: {
+      type: graphql.GraphQLBoolean,
+      resolve(user) {
+        return user.role === 'admin';
+      }
+    },
   }
 })
 
