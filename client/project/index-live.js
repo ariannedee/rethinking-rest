@@ -28,7 +28,13 @@ function gqlRequest(query, variables, onSuccess) {
     contentType: "application/json",
     headers: {
       Authorization: "bearer ..."
-    }
+    },
+    data: JSON.stringify({
+      query: query,
+      variables: variables
+    }),
+    success: onSuccess,
+    error: (error) => console.log(error)
   });
 }
 
@@ -39,5 +45,15 @@ function starHandler(element) {
 
 $(window).ready(function() {
   // GET NAME AND REPOSITORIES FOR VIEWER
-
+  const query = `
+  {
+    viewer {
+      name
+    }
+  }
+  `
+  gqlRequest(query, null, (response) => {
+    console.log(response);
+    $("header h2").text(`Hello ${response.data.viewer.name}`);
+  });
 });
