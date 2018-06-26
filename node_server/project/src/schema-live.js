@@ -1,12 +1,26 @@
 var graphql = require('graphql');
 
+const UserType = new graphql.GraphQLObjectType({
+  name: 'User',
+  description: 'This represents a User',
+  fields: {
+    id: {
+      type: graphql.GraphQLID,
+      resolve(user) {
+        return user.id;
+      }
+    },
+
+  }
+})
+
 var queryType = new graphql.GraphQLObjectType({
   name: 'Query',
   fields: {
-    hello: {
-      type: graphql.GraphQLString,
-      resolve () {
-        return 'world';
+    users: {
+      type: new graphql.GraphQLList(UserType),
+      resolve(root, args, context) {
+        return [{id: 1, username: 'admin'}]
       }
     }
   }
