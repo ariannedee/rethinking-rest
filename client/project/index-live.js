@@ -22,6 +22,7 @@ const queryRepoList = `
     repos: repositoriesContributedTo (first: 10, orderBy: {field: CREATED_AT, direction: DESC}) {
       totalCount
       nodes {
+        starred: viewerHasStarred
         name
         issues (states: OPEN) {
           totalCount
@@ -29,11 +30,12 @@ const queryRepoList = `
         pullRequests (states: OPEN) {
           totalCount
         }
+        ... commitFragment
       }
     }
   }
 }
-`;
+` + commitFragment;
 
 let mutationAddStar;
 
@@ -51,7 +53,13 @@ function gqlRequest(query, variables, onSuccess) {
       query: query,
       variables: variables
     }),
-    success: onSuccess,
+    success: (response) => {
+      if (response.errors) {
+        console.log(response.errors);
+      } else {
+        onSuccess(response.data);
+      }
+    },
     error: (error) => console.log(error)
   });
 }
@@ -64,18 +72,22 @@ function starHandler(element) {
 $(window).ready(function() {
   // GET NAME AND REPOSITORIES FOR VIEWER
 
-  gqlRequest(queryRepoList, null, (response) => {
-    console.log(response);
-    $("header h2").text(`Hello ${response.data.viewer.name}`);
-    const repos = response.data.viewer.repos;
+  gqlRequest(queryRepoList, null, (data) => {
+    $("header h2").text(`Hello ${data.viewer.name}`);
+    const repos = data.viewer.repos;
     if (repos.totalCount > 0) {
       $("ul").empty();
     }
     repos.nodes.forEach((repo) => {
+      const star = repo.starred? fullStar : emptyStar;
       let content = `
-      <h3>${repo.name}</h3>
+      <h3>
+        ${repo.name}
+        <span class="star">${star}</span>
+      </h3>
       <p>${repo.issues.totalCount} open issues</p>
       <p>${repo.pullRequests.totalCount} open PRs</p>
+      <p>${repo.ref.target.history.totalCount} commits</p>
       `
       $("ul").append(`<li>${content}</li>`);
     });
