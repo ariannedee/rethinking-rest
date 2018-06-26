@@ -16,7 +16,13 @@ const HasReadType = new graphql.GraphQLObjectType({
         resolve(hasRead) {
           return knex('book').where('id', hasRead.bookId).first();
         }
-      }
+      },
+      user: {
+        type: UserType,
+        resolve(hasRead) {
+          return knex('user').where('id', hasRead.userId).first();
+        }
+      },
     }
   }
 })
@@ -47,6 +53,17 @@ const UserType = new graphql.GraphQLObjectType({
       type: graphql.GraphQLList(HasReadType),
       resolve(user) {
         return knex('hasRead').where('userId', user.id);
+      }
+    },
+    averageRating: {
+      type: graphql.GraphQLFloat,
+      resolve(user) {
+        let query = knex('hasRead')
+                    .where('userId', user.id)
+                    .avg('rating as avg_rating')
+                    .first();
+        console.log(query);
+        return query['avg_rating'];
       }
     }
   }
@@ -85,6 +102,12 @@ const BookType = new graphql.GraphQLObjectType({
         return book.fiction;
       }
     },
+    readBy: {
+      type: graphql.GraphQLList(HasReadType),
+      resolve(book) {
+        return knex('hasRead').where('bookId', book.id);
+      }
+    }
   }
 });
 
@@ -99,8 +122,19 @@ var queryType = new graphql.GraphQLObjectType({
     },
     books: {
       type: graphql.GraphQLList(BookType),
-      resolve() {
-        return knex('book');
+      args: {
+        fiction: {
+          type: graphql.GraphQLBoolean
+        }
+      },
+      resolve(root, args) {
+        let query = knex('book');
+        if (args.fiction === true) {
+          query.where('fiction', true);
+        } else if (args.fiction === false) {
+          query.where('fiction', false);
+        }
+        return query
       }
     }
   }
