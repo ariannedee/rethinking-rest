@@ -34,7 +34,31 @@ const BookType = new graphql.GraphQLObjectType({
       resolve(book) {
         return book.id;
       }
-    }
+    },
+    title: {
+      type: graphql.GraphQLString,
+      resolve(book) {
+        return book.title;
+      }
+    },
+    author: {
+      type: graphql.GraphQLString,
+      resolve(book) {
+        return book.author;
+      }
+    },
+    publishedYear: {
+      type: graphql.GraphQLInt,
+      resolve(book) {
+        return book.publishedYear;
+      }
+    },
+    fiction: {
+      type: graphql.GraphQLBoolean,
+      resolve(book) {
+        return book.fiction;
+      }
+    },
   }
 });
 
