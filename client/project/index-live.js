@@ -15,7 +15,19 @@ fragment commitFragment on Repository {
 }
 `;
 
-let queryRepoList;
+const queryRepoList = `
+{
+  viewer {
+    name
+		repos: repositoriesContributedTo (first: 10) {
+      totalCount
+      nodes {
+        name
+      }
+    }    
+  }
+}
+`;
 
 let mutationAddStar;
 
@@ -51,8 +63,19 @@ function starHandler(element) {
 
 $(window).ready(function() {
   // GET NAME AND REPOSITORIES FOR VIEWER
-  var query = '{viewer { name } }';
-  gqlRequest(query, {}, (response) => {
+  gqlRequest(queryRepoList, {}, (response) => {
+    console.log(response);
     $('header h2').text(`Hello ${response.data.viewer.name}`);
+    const repos = response.data.viewer.repos;
+    console.log(repos);
+    if (repos.totalCount > 0) {
+      $('ul').empty();
+    }
+    repos.nodes.forEach((repo) => {
+      const card = `
+      <h3>${repo.name}</h3>
+      `;
+      $('ul.repos').append(`<li><div>${card}</div></li>`);
+    });
   });
 });
