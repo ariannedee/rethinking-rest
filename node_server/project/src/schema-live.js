@@ -23,6 +23,12 @@ const UserType = new graphql.GraphQLObjectType({
         resolve(user) {
           return user.role == 'admin';
         }
+      },
+      booksRead: {
+        type: graphql.GraphQLList(HasReadType),
+        resolve(user) {
+          return knex('hasRead').where('userId', user.id);
+        }
       }
     }
   }
@@ -36,9 +42,51 @@ var BookType = new graphql.GraphQLObjectType({
       resolve(book) {
         return book.id;
       }
-    }
+    },
+    title: {
+      type: graphql.GraphQLString,
+      resolve(book) {
+        return book.title;
+      }
+    },
+    publishedYear: {
+      type: graphql.GraphQLInt,
+      resolve(book) {
+        return book.publishedYear;
+      }
+    },
+    author: {
+      type: graphql.GraphQLString,
+      resolve(book) {
+        return book.author;
+      }
+    },
+    fiction: {
+      type: graphql.GraphQLBoolean,
+      resolve(book) {
+        return book.fiction;
+      }
+    },
   }
 });
+
+const HasReadType = new graphql.GraphQLObjectType({
+  name: 'HasRead',
+  fields: {
+    rating: {
+      type: graphql.GraphQLInt,
+      resolve(hasRead) {
+        return hasRead.rating;
+      }
+    },
+    book: {
+      type: BookType,
+      resolve(hasRead) {
+        return knex('book').where('id', hasRead.bookId).first();
+      }
+    }
+  }
+})
 
 var queryType = new graphql.GraphQLObjectType({
   name: 'Query',
