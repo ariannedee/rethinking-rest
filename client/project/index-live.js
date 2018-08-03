@@ -51,5 +51,8 @@ function starHandler(element) {
 
 $(window).ready(function() {
   // GET NAME AND REPOSITORIES FOR VIEWER
-
+  var query = '{viewer { name } }';
+  gqlRequest(query, {}, (response) => {
+    console.log(response);
+  });
 });
