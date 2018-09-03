@@ -15,26 +15,7 @@ fragment commitFragment on Repository {
 }
 `;
 
-const queryRepoList = `
-{
-  viewer {
-    name
-		repos: repositoriesContributedTo (first: 10) {
-      totalCount
-      nodes {
-        name
-        issues (states: OPEN) {
-          totalCount
-        }
-        prs: pullRequests (states: OPEN) {
-          totalCount
-        }
-        ... commitFragment
-      }
-    }    
-  }
-}
-` + commitFragment;
+let queryRepoList;
 
 let mutationAddStar;
 
@@ -42,25 +23,7 @@ let mutationRemoveStar;
 
 function gqlRequest(query, variables, onSuccess) {
   // MAKE GRAPHQL REQUEST
-  $.post({
-    url: "https://api.github.com/graphql",
-    headers: {
-      Authorization: "bearer ..."
-    },
-    contentType: "application/json",
-    data: JSON.stringify({
-      query: query,
-      variables: variables
-    }),
-    success: (response) => {
-      if (response.errors) {
-        console.log(response.errors);
-      } else {
-        onSuccess(response);
-      }
-    },
-    error: (error) => console.log(error)
-  })
+
 }
 
 function starHandler(element) {
@@ -70,22 +33,5 @@ function starHandler(element) {
 
 $(window).ready(function() {
   // GET NAME AND REPOSITORIES FOR VIEWER
-  gqlRequest(queryRepoList, {}, (response) => {
-    console.log(response);
-    $('header h2').text(`Hello ${response.data.viewer.name}`);
-    const repos = response.data.viewer.repos;
-    console.log(repos);
-    if (repos.totalCount > 0) {
-      $('ul').empty();
-    }
-    repos.nodes.forEach((repo) => {
-      const card = `
-      <h3>${repo.name}</h3>
-      <p>${repo.prs.totalCount} open PRs</p>
-      <p>${repo.issues.totalCount} open issues</p>
-      <p>${repo.ref.target.history.totalCount} commits</p>
-      `;
-      $('ul.repos').append(`<li><div>${card}</div></li>`);
-    });
-  });
+
 });
