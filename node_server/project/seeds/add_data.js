@@ -39,7 +39,11 @@ exports.seed = function(knex, Promise) {
             .then(function() {
               return knex('hasRead').insert([
                 {userId: 2, bookId: 17, rating: 9},
-                {userId: 2, bookId: 7, rating: 8}
+                {userId: 2, bookId: 7, rating: 8},
+                {userId: 1, bookId: 1, rating: 7},
+                {userId: 3, bookId: 7, rating: 10},
+                {userId: 3, bookId: 20, rating: 6},
+                {userId: 4, bookId: 12, rating: 7}
               ]);
             });
           });
