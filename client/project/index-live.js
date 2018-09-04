@@ -19,10 +19,13 @@ const queryRepoList = `
 {
   viewer {
     name
-    repos: repositories (first: 9) {
+    repos: repositoriesContributedTo (first: 9, orderBy: {field: CREATED_AT, direction: DESC}) {
       totalCount
       nodes {
         name
+        issues (states: OPEN) {
+          totalCount
+        }
       }
     }
   }
@@ -70,7 +73,10 @@ $(window).ready(function() {
         $('ul.repos').empty();
       }
       repos.nodes.forEach((repo) => {
-        const card = `<h3>${repo.name}</h3>`
+        const card = `
+          <h3>${repo.name}</h3>
+          <p>${repo.issues.totalCount} open issues</p>
+        `
         $('ul.repos').append(`<li><div>${card}</div></li>`)
       });
     });
