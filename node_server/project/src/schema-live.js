@@ -26,6 +26,18 @@ const UserType = new graphql.GraphQLObjectType({
   }
 });
 
+const BookType = new graphql.GraphQLObjectType({
+  name: 'Book',
+  fields: {
+    id: {
+      type: graphql.GraphQLID,
+      resolve(book) {
+        return book.id;
+      }
+    }
+  }
+});
+
 const queryType = new graphql.GraphQLObjectType({
   name: 'Query',
   fields: {
@@ -33,6 +45,12 @@ const queryType = new graphql.GraphQLObjectType({
       type: new graphql.GraphQLList(UserType),
       resolve(root) {
         return knex('user');
+      }
+    },
+    books: {
+      type: new graphql.GraphQLList(BookType),
+      resolve(root) {
+        return knex('book');
       }
     }
   }
