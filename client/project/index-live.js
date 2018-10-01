@@ -35,7 +35,12 @@ function gqlRequest(query, variables, onSuccess) {
     }),
     success: (response) => {
       console.log(response);
-      onSuccess(response.data);
+      if (response.errors !== null) {
+        console.log("There were errors");
+        console.log(response.errors);
+      } else {
+        onSuccess(response.data);
+      }
     },
     error: (response) => {
       console.log(response);
