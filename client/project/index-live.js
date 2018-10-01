@@ -19,14 +19,24 @@ const queryRepoList = `
 {
   viewer {
     name
-    repos: repositoriesContributedTo (first: 6) {
+    repos: repositoriesContributedTo (
+      first: 6, 
+      orderBy: {field: CREATED_AT, direction: DESC}
+    ) {
       nodes {
         name: nameWithOwner
+        issues (states: OPEN) {
+          totalCount
+        }
+        pullRequests (states: OPEN) {
+          totalCount
+        }
+        ... commitFragment
       }
     }
   }
 }
-`;
+` + commitFragment;
 
 let mutationAddStar;
 
@@ -70,7 +80,12 @@ $(window).ready(function() {
     $("header h2").text(`Hello ${data.viewer.name}`);
     $("ul.repos").empty();
     data.viewer.repos.nodes.forEach((repo) => {
-      const cardContent = `<h3>${repo.name}</h3>`;
+      const cardContent = `
+        <h3>${repo.name}</h3>
+        <p>${repo.issues.totalCount} open issues</p>
+        <p>${repo.pullRequests.totalCount} open PRs</p>
+        <p>${repo.ref.target.history.totalCount} commits</p>
+      `;
       $("ul.repos").append(`<li><div>${cardContent}</div></li>`);
     });
 
