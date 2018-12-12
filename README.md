@@ -7,23 +7,31 @@ Requires a modern browser capable of running ES6 JavaScript
 ## Node server
 Requires Node >= 8.9
 
-`npm install` to install libraries
+### Before the class
 
-`npm start` to run
+1. In your terminal, navigate to the `node_server/project` folder
+
+2. `npm install` to install libraries
+
+3. `npm start` to run
 
 `knex seed:run` to reset seed data
 
 ## Django server
-Requires Python 3.6 and Pipenv
+Requires Python 3.6 and Pipenv.
 
 `pip install pipenv` if you don't already have Pipenv
 
-`pipenv --python 3.6` to create virtual environment
+### Before the class
 
-`pipenv install` to install libraries
+1. In your terminal, navigate to the `django_server/project` folder
 
-`pipenv shell` to activate the virtual environment
+2. `pipenv --python 3.6` to create virtual environment
 
-`python manage.py runserver` to run
+3. `pipenv install` to install libraries
 
-`python manage.py loaddata users books` to rest seed data
+4. `pipenv shell` to activate the virtual environment
+
+5. `python manage.py runserver` to run
+
+`python manage.py loaddata users books` to reset seed data
