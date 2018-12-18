@@ -23,7 +23,21 @@ let mutationRemoveStar;
 
 function gqlRequest(query, variables, onSuccess) {
   // MAKE GRAPHQL REQUEST
-
+  $.post({
+    url: "https://api.github.com/graphql",
+    headers: {
+      Authorization: "bearer ..."
+    },
+    contentType: "application/json",
+    data: JSON.stringify({
+      query: query,
+      variables: variables
+    }),
+    success: (response) => {
+      console.log(response);
+      onSuccess(response);
+    }
+  })
 }
 
 function starHandler(element) {
@@ -33,5 +47,8 @@ function starHandler(element) {
 
 $(window).ready(function() {
   // GET NAME AND REPOSITORIES FOR VIEWER
-
+  const query = "{viewer {name} }"
+  gqlRequest(query, {}, (response) => {
+    $('header h2').text(`Hello ${response.data.viewer.name}`);
+  });
 });
