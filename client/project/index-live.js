@@ -29,11 +29,12 @@ const queryRepoList = `
         pullRequests(states: OPEN) {
           totalCount
         }
+        ... commitFragment
       }
     }
   }
 }
-`;
+` + commitFragment;
 
 let mutationAddStar;
 
@@ -52,8 +53,11 @@ function gqlRequest(query, variables, onSuccess) {
       variables: variables
     }),
     success: (response) => {
-      console.log(response);
-      onSuccess(response);
+      if (response.errors) {
+        console.log(response.errors);
+      } else {
+        onSuccess(response);
+      }
     }
   })
 }
@@ -78,6 +82,7 @@ $(window).ready(function() {
       <h3>${repo.name}</h3>
       <p>${repo.issues.totalCount} open issues</p>
       <p>${repo.pullRequests.totalCount} open PRs</p>
+      <p>${repo.ref.target.history.totalCount} commits</p>
       `;
       $("ul.repos").append(`<li><div>${card}</div></li>`);
     });
