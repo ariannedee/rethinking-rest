@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 
-django = "*"
+django = ">=2.0.8"
 "graphene-django" = "*"
 "django-filter" = "*"
 
