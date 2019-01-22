@@ -16,21 +16,44 @@ const UserType = new graphql.GraphQLObjectType({
       resolve(user) {
         return user.username;
       }
+    },
+    isAdmin: {
+      type: graphql.GraphQLBoolean,
+      resolve(user) {
+        return user.role === "admin";
+      }
+    },
+  }
+});
+
+const BookType = new graphql.GraphQLObjectType({
+  name: "Book",
+  fields: {
+    id: {
+      type: graphql.GraphQLID,
+      resolve(book) {
+        return book.id;
+      }
     }
   }
 });
 
-
 const queryType = new graphql.GraphQLObjectType({
-    name: "Query",
-    fields: {
-        users: {
-            type: graphql.GraphQLList(UserType),
-            resolve() {
-                return knex('user');
-            }
-        }
+  name: "Query",
+  fields: {
+    users: {
+      type: graphql.GraphQLList(UserType),
+      resolve() {
+        return knex('user');
+      }
+    },
+    books: {
+      type: graphql.GraphQLList(BookType),
+      resolve() {
+        return knex('book');
+      }
     }
+  }
 });
 
 const schema = new graphql.GraphQLSchema({query: queryType});
