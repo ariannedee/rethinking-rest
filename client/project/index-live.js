@@ -50,5 +50,6 @@ $(window).ready(function() {
   gqlRequest("query{viewer{name}}", {}, 
     (response) => {
       console.log(response);
+      $("header h2").text(`Hello ${response.data.viewer.name}`)
     });
 });
