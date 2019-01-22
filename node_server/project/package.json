@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "DEBUG=*,-express:*,-nodemon*,-body* nodemon app.js"
+    "start": "nodemon app.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
