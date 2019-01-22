@@ -1,10 +1,7 @@
 import graphene
-
-
-class Query(graphene.ObjectType):
-import graphene
 import graphene_django
 from django.contrib.auth.backends import UserModel
+from .models import Book
 
 
 class UserType(graphene_django.DjangoObjectType):
@@ -13,21 +10,25 @@ class UserType(graphene_django.DjangoObjectType):
     def resolve_is_admin(self, info):
         return self.is_staff
 
-    class Meta:
+    class Meta(object):
         model = UserModel
         only_fields = ('id', 'username',)
 
 
+class BookType(graphene_django.DjangoObjectType):
+    class Meta(object):
+        model = Book
+
+
 class Query(graphene.ObjectType):
     users = graphene.List(UserType)
+    books = graphene.List(BookType)
 
     def resolve_users(self, info):
         return UserModel.objects.all()
 
-
-schema = graphene.Schema(query=Query)
-    def resolve_hello(self, info):
-        return 'world'
+    def resolve_books(self, info):
+        return Book.objects.all()
 
 
 schema = graphene.Schema(query=Query)
