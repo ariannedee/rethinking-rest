@@ -19,7 +19,7 @@ const queryRepoList = `
 query { 
   viewer { 
     name
-    repositories (first: 6) {
+    repositories (first: 6, orderBy: {field: CREATED_AT, direction: DESC}) {
       totalCount
       nodes {
         name
@@ -39,7 +39,7 @@ function gqlRequest(query, variables, onSuccess) {
     url: "https://api.github.com/graphql",
     contentType: "application/json",
     headers: {
-      Authorization: "bearer ..."
+      Authorization: "bearer f571aef5a57ac08ca5a30772111d90cc2e511829"
     },
     data: JSON.stringify({
       query: query,
