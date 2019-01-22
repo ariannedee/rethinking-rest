@@ -23,6 +23,9 @@ query {
       totalCount
       nodes {
         name
+        openIssues: issues (states: OPEN){
+          totalCount
+        }
       }
     }
   }
@@ -67,7 +70,11 @@ $(window).ready(function() {
         $("ul.repos").empty();
       }
       repos.nodes.forEach((repo) => {
-        $("ul.repos").append(`<li><div><h3>${repo.name}</h3></div></li>`);
+        const card = `
+        <h3>${repo.name}</h3>
+        <p>${repo.openIssues.totalCount} open issues</p>
+        `;
+        $("ul.repos").append(`<li><div>${card}</div></li>`);
       });
     });
 });
