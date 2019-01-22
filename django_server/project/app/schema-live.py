@@ -1,14 +1,21 @@
 import graphene
 import graphene_django
 from django.contrib.auth.backends import UserModel
+from django.db.models import Avg
+
 from .models import Book, HasRead
 
 
 class UserType(graphene_django.DjangoObjectType):
     is_admin = graphene.Boolean()
+    average_rating = graphene.Float()
 
     def resolve_is_admin(self, info):
         return self.is_staff
+
+    def resolve_average_rating(self, info):
+        q = self.books_read.all().aggregate(Avg('rating'))
+        return q['rating__avg']
 
     class Meta(object):
         model = UserModel
