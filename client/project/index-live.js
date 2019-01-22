@@ -16,21 +16,25 @@ fragment commitFragment on Repository {
 `;
 
 const queryRepoList = `
-query { 
-  viewer { 
+{
+  viewer {
     name
-    repositories (first: 6, orderBy: {field: CREATED_AT, direction: DESC}) {
+    repositories(first: 6, orderBy: {field: CREATED_AT, direction: DESC}) {
       totalCount
       nodes {
         name
-        openIssues: issues (states: OPEN){
+        openIssues: issues(states: OPEN) {
           totalCount
         }
+        openPRs: pullRequests(states: OPEN) {
+          totalCount
+        }
+        ... commitFragment
       }
     }
   }
 }
-`;
+` + commitFragment;
 
 let mutationAddStar;
 
@@ -73,6 +77,8 @@ $(window).ready(function() {
         const card = `
         <h3>${repo.name}</h3>
         <p>${repo.openIssues.totalCount} open issues</p>
+        <p>${repo.openPRs.totalCount} open PRs</p>
+        <p>${repo.ref.target.history.totalCount} commits</p>
         `;
         $("ul.repos").append(`<li><div>${card}</div></li>`);
       });
