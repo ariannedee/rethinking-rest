@@ -29,6 +29,16 @@ const UserType = new graphql.GraphQLObjectType({
         resolve(user) {
           return knex("hasRead").where("userId", user.id);
         }
+      },
+      averageRating: {
+        type: graphql.GraphQLFloat,
+        async resolve(user) {
+          let query = await knex('hasRead')
+            .where('userId', user.id)
+            .avg('rating as avg_rating')
+            .first();
+          return query['avg_rating'];
+        }
       }
     }
   }
