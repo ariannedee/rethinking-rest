@@ -20,6 +20,12 @@ class UserType(graphene_django.DjangoObjectType):
 
 
 class BookType(graphene_django.DjangoObjectType):
+    average_rating = graphene.Float()
+
+    def resolve_average_rating(self, info):
+        query = self.read_by.all().aggregate(Avg('rating'))
+        return query['rating__avg']
+
     class Meta:
         model = Book
 
