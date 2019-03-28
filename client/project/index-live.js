@@ -24,17 +24,20 @@ const queryRepoList =
       totalCount
       nodes {
         name
+        id
+        viewerHasStarred
         openIssues: issues {
           totalCount
         }
         openPRs: pullRequests {
           totalCount
         }
+        ... commitFragment
       }
     }
   }
 }
-`;
+` + commitFragment;
 
 let mutationAddStar;
 
@@ -53,8 +56,11 @@ function gqlRequest(query, variables, onSuccess) {
       variables: variables
     }),
     success: (response) => {
-      console.log(response);
-      onSuccess(response.data);
+      if (response.errors) {
+        console.log(response.errors);
+      } else {
+        onSuccess(response.data);
+      }
     }
   });
 }
@@ -74,11 +80,13 @@ $(window).ready(function() {
       $('ul.repos').empty();
     }
     repos.nodes.forEach((repo) => {
+      const star = repo.viewerHasStarred ? fullStar : emptyStar;
       const card = `
       <li><div>
-      <h3>${repo.name}</h3>
+      <h3>${repo.name}<span class="star">${star}</span></h3>
       <p>${repo.openIssues.totalCount} open issues</p>
       <p>${repo.openPRs.totalCount} open pull requests</p>
+      <p>${repo.ref.target.history.totalCount} commits</p>
       </div></li>`
       $('ul.repos').append(card);
     });
