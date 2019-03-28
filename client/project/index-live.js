@@ -15,7 +15,20 @@ fragment commitFragment on Repository {
 }
 `;
 
-let queryRepoList;
+const queryRepoList = 
+`
+{
+  viewer {
+    name
+    repositories(first: 6) {
+      totalCount
+      nodes {
+        name
+      }
+    }
+  }
+}
+`;
 
 let mutationAddStar;
 
@@ -23,7 +36,21 @@ let mutationRemoveStar;
 
 function gqlRequest(query, variables, onSuccess) {
   // MAKE GRAPHQL REQUEST
-
+  $.post({
+    url: "https://api.github.com/graphql",
+    contentType: "application/json",
+    headers: {
+      Authorization: "bearer ..."
+    },
+    data: JSON.stringify({
+      query: query,
+      variables: variables
+    }),
+    success: (response) => {
+      console.log(response);
+      onSuccess(response.data);
+    }
+  });
 }
 
 function starHandler(element) {
@@ -33,5 +60,16 @@ function starHandler(element) {
 
 $(window).ready(function() {
   // GET NAME AND REPOSITORIES FOR VIEWER
-
+  gqlRequest(queryRepoList, {}, (data) => {
+    const name = data.viewer.name;
+    $('header h2').text(`Hello ${name}`);
+    const repos = data.viewer.repositories;
+    if (repos.totalCount > 0) {
+      $('ul.repos').empty();
+    }
+    repos.nodes.forEach((repo) => {
+      const card = `<li><div><h3>${repo.name}</h3></div></li>`
+      $('ul.repos').append(card);
+    });
+  });
 });
