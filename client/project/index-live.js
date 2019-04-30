@@ -28,12 +28,13 @@ query {
         openPRs: pullRequests (states: OPEN) {
           totalCount
         }
+        ... commitFragment
         name
       }
     }
   }
 }
-`;
+` + commitFragment;
 
 let mutationAddStar;
 
@@ -52,8 +53,11 @@ function gqlRequest(query, variables, onSuccess) {
       variables: variables
     }),
     success: (response) => {
-      console.log(response);
-      onSuccess(response);
+      if (response.errors) {
+        console.log(response.errors);
+      } else {
+        onSuccess(response.data);
+      }
     },
     error: (error) => {
       console.log("Error:")
@@ -69,9 +73,9 @@ function starHandler(element) {
 
 $(window).ready(function() {
   // GET NAME AND REPOSITORIES FOR VIEWER
-  gqlRequest(queryRepoList, {}, (response) => {
-    $('header h2').text(`Hello ${response.data.viewer.name}`);
-    const repos = response.data.viewer.repositories;
+  gqlRequest(queryRepoList, {}, (data) => {
+    $('header h2').text(`Hello ${data.viewer.name}`);
+    const repos = data.viewer.repositories;
     if (repos.totalCount > 0) {
       $('ul.repos').empty();
     }
@@ -80,6 +84,7 @@ $(window).ready(function() {
       <h3>${repo.name}</h3>
       <p>${repo.openIssues.totalCount} open issues</p>
       <p>${repo.openPRs.totalCount} open PRs</p>
+      <p>${repo.ref.target.history.totalCount} commits</p>
       `;
 
       $('ul.repos').append(`<li><div>${card}</div></li>`);
