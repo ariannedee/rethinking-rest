@@ -38,12 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app.apps.BibliographConfig',
-    'graphene_django',
 ]
-
-GRAPHENE = {
-    'SCHEMA': 'app.schema.schema',
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
