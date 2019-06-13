@@ -4,17 +4,25 @@ const knex = require('../db');
 const UserType = new graphql.GraphQLObjectType({
     name: 'User',
     description: 'A user in the system',
-    fields: {
-        id: {
-            type: graphql.GraphQLID,
-            resolve(user) {
-                return user.id;
-            }
-        },
-        username: {
-            type: graphql.GraphQLString,
-            resolve(user) {
-                return user.username;
+    fields: () => {
+        return {
+            id: {
+                type: graphql.GraphQLID,
+                resolve(user) {
+                    return user.id;
+                }
+            },
+            username: {
+                type: graphql.GraphQLString,
+                resolve(user) {
+                    return user.username;
+                }
+            },
+            booksRead: {
+                type: graphql.GraphQLList(HasReadType),
+                resolve(user) {
+                    return knex('hasRead').where('userId', user.id);
+                }
             }
         }
     }
@@ -45,6 +53,24 @@ const BookType = new graphql.GraphQLObjectType({
             type: graphql.GraphQLBoolean,
             resolve(book) {
                 return book.fiction;
+            }
+        }
+    }
+});
+
+const HasReadType = new graphql.GraphQLObjectType({
+    name: 'HasRead',
+    fields: {
+        rating: {
+            type: graphql.GraphQLInt,
+            resolve(hasRead) {
+                return hasRead.rating;
+            }
+        },
+        book: {
+            type: BookType,
+            resolve(hasRead) {
+                return knex('book').where('id', hasRead.bookId).first();
             }
         }
     }
