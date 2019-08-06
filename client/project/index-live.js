@@ -15,26 +15,7 @@ fragment commitFragment on Repository {
 }
 `;
 
-const queryRepoList = `
-{
-  viewer {
-    name
-    repositories(first: 6, orderBy: {field: CREATED_AT, direction: DESC}) {
-      totalCount
-      nodes {
-        name
-        openIssues: issues(states: OPEN) {
-          totalCount
-        }
-        openPRs: pullRequests(states: OPEN) {
-          totalCount
-        }
-        ... commitFragment
-      }
-    }
-  }
-}
-` + commitFragment;
+let queryRepoList;
 
 let mutationAddStar;
 
@@ -53,13 +34,8 @@ function gqlRequest(query, variables, onSuccess) {
       variables: variables
     }),
     success: (response) => {
-      if (response.errors) {
-        console.log(response.errors);
-      } else {
-        onSuccess(response.data);
-      }
-    },
-    error: (error) => console.log(error)
+      onSuccess(response.data);
+    }
   });
 }
 
@@ -70,22 +46,8 @@ function starHandler(element) {
 
 $(window).ready(function() {
   // GET NAME AND REPOSITORIES FOR VIEWER
-  gqlRequest(queryRepoList, {}, (data) => {
-    console.log(data);
-    $('header h2').text(`Hello ${data.viewer.name}`);
-    const repos = data.viewer.repositories;
-    if (repos.totalCount > 0) {
-      $('ul.repos').empty();
-      repos.nodes.forEach((repo) => {
-        console.log(repo);
-        const card = `
-        <h3>${repo.name}</h3>
-        <p>${repo.openIssues.totalCount} open issues</p>
-        <p>${repo.openPRs.totalCount} open pull requests</p>
-        <p>${repo.ref.target.history.totalCount} commits</p>
-        `
-        $('ul.repos').append(`<li>${card}</li>`);
-      });
-    }
+  gqlRequest("{viewer{name}}", {}, (data) => {
+    const name = data.viewer.name;
+    $('header h2').text("Hello " + name);
   });
 });
