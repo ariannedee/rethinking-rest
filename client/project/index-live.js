@@ -29,11 +29,12 @@ const queryRepoList = `
         openPRs: pullRequests(states: OPEN) {
           totalCount
         }
+        ... commitFragment
       }
     }
   }
 }
-`;
+` + commitFragment;
 
 let mutationAddStar;
 
@@ -79,6 +80,7 @@ $(window).ready(function() {
         <h3>${repo.name}</h3>
         <p>${repo.openIssues.totalCount} open issues</p>
         <p>${repo.openPRs.totalCount} open PRs</p>
+        <p>${repo.ref.target.history.totalCount} commits</p>
         </li>`;
         $('ul.repos').append(card);
       });
