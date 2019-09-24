@@ -24,6 +24,12 @@ const userType = new graphql.GraphQLObjectType( {
           return user.role == 'admin';
         }
       },
+      booksRead: {
+        type: graphql.GraphQLList(hasReadType),
+        resolve (user) {
+          return knex('hasRead').where('userId', user.id);
+        }
+      },
     }
   }
 });
@@ -60,6 +66,26 @@ const bookType = new graphql.GraphQLObjectType( {
         type: graphql.GraphQLInt,
         resolve (book) {
           return book.publishedYear;
+        }
+      },
+    }
+  }
+});
+
+const hasReadType = new graphql.GraphQLObjectType( {
+  name: 'HasRead',
+  fields: () => {
+    return {
+      rating: {
+        type: graphql.GraphQLInt,
+        resolve (hasRead) {
+          return hasRead.rating;
+        }
+      },
+      book: {
+        type: graphql.GraphQLNonNull(bookType),
+        resolve (hasRead) {
+          return knex('book').where('id', hasRead.bookId).first();
         }
       },
     }
