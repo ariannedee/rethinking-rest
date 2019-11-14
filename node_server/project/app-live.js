@@ -3,16 +3,11 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var graphqlHTTP = require('express-graphql');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var schema = require('./src/schema');
 
 var app = express();
-app.use('/graphql', graphqlHTTP({
-  schema: schema,
-  graphiql: true
-}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
