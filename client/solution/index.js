@@ -66,7 +66,7 @@ function gqlRequest(query, variables, onSuccess) {
   $.post({
     url: "https://api.github.com/graphql",
     headers: {
-      Authorization: "bearer ..."
+      Authorization: `bearer ${env.GITHUB_PERSONAL_ACCESS_TOKEN}`
     },
     contentType: "application/json",
     data: JSON.stringify({
