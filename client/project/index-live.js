@@ -19,7 +19,7 @@ const queryRepoList = `
 query {
   viewer {
     name
-    repositories(first: 3) {
+    repositories(first: 9, orderBy: {field: CREATED_AT, direction: DESC}) {
       totalCount
       nodes {
         name
