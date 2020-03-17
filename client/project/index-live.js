@@ -35,6 +35,7 @@ function gqlRequest(query, variables, onSuccess) {
     }),
     success: (response) => {
       console.log(response);
+      onSuccess(response);
     }
   });
 }
@@ -46,5 +47,7 @@ function starHandler(element) {
 
 $(window).ready(function() {
   // GET NAME AND REPOSITORIES FOR VIEWER
-
+  gqlRequest("{viewer{name}}", null, (response) => {
+    $('header h2').text(`Hello ${response.data.viewer.name}`);
+  });
 });
