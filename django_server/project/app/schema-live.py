@@ -1,7 +1,8 @@
 import graphene
 import graphene_django
+from django.db.models import Avg
 from django.contrib.auth.backends import UserModel
-from .models import Book
+from .models import Book, HasRead
 
 
 class UserType(graphene_django.DjangoObjectType):
@@ -12,12 +13,23 @@ class UserType(graphene_django.DjangoObjectType):
 
     class Meta:
         model = UserModel
-        only_fields = ('id', 'username')
+        only_fields = ('id', 'username', 'books_read')
 
 
 class BookType(graphene_django.DjangoObjectType):
+    average_rating = graphene.Float()
+
+    def resolve_average_rating(self, info):
+        query = self.read_by.all().aggregate(Avg('rating'))
+        return query['rating__avg']
+
     class Meta:
         model = Book
+
+
+class HasReadType(graphene_django.DjangoObjectType):
+    class Meta:
+        model = HasRead 
 
 
 class Query(graphene.ObjectType):
