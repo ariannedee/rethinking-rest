@@ -16,18 +16,25 @@ fragment commitFragment on Repository {
 `;
 
 const queryRepoList = `
-query {
+{
   viewer {
     name
-    repositories(first: 9, orderBy: {field: CREATED_AT, direction: DESC}) {
+    repos: repositories(first: 9, orderBy: {field: CREATED_AT, direction: DESC}) {
       totalCount
       nodes {
         name
+        issues(states: OPEN) {
+          totalCount
+        }
+        prs: pullRequests(states: OPEN) {
+          totalCount
+        }
+        ... commitFragment
       }
     }
   }
 }
-`;
+` + commitFragment;
 
 let mutationAddStar;
 
@@ -61,11 +68,16 @@ $(window).ready(function() {
   // GET NAME AND REPOSITORIES FOR VIEWER
   gqlRequest(queryRepoList, null, (response) => {
     $('header h2').text(`Hello ${response.data.viewer.name}`);
-    const repos = response.data.viewer.repositories;
+    const repos = response.data.viewer.repos;
     if (repos.totalCount > 0) {
       $('ul.repos').empty();
       repos.nodes.forEach((repo) => {
-        const card = `<h3>${repo.name}</h3>`;
+        const card = `
+        <h3>${repo.name}</h3>
+        <p>${repo.issues.totalCount} open issues</p>
+        <p>${repo.prs.totalCount} open PRs</p>
+        <p>${repo.ref.target.history.totalCount} commits</p>
+        `;
         $('ul.repos').append(`<li><div>${card}</div></li>`);
       });
     }
