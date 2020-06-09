@@ -11,7 +11,6 @@ var graphqlHTTP = require('express-graphql');
 var schema = require('./src/schema');
 
 var app = express();
-
 app.use('/graphql', graphqlHTTP({
   schema: schema,
   graphiql: true
