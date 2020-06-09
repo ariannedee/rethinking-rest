@@ -36,37 +36,45 @@ const UserType = new graphql.GraphQLObjectType({
 
 const BookType = new graphql.GraphQLObjectType({
   name: 'Book',
-  fields: {
-    id: {
-      type: graphql.GraphQLID,
-      resolve(book) {
-        return book.id;
+  fields: () => {
+    return {
+      id: {
+        type: graphql.GraphQLID,
+        resolve(book) {
+          return book.id;
+        }
+      },
+      title: {
+        type: graphql.GraphQLString,
+        resolve(book) {
+          return book.title;
+        }
+      },
+      author: {
+        type: graphql.GraphQLString,
+        resolve(book) {
+          return book.author;
+        }
+      },
+      publishedYear: {
+        type: graphql.GraphQLInt,
+        resolve(book) {
+          return book.publishedYear;
+        }
+      },
+      fiction: {
+        type: graphql.GraphQLBoolean,
+        resolve(book) {
+          return book.fiction;
+        }
+      },
+      readBy: {
+        type: graphql.GraphQLList(HasReadType),
+        resolve(book) {
+          return knex('hasRead').where('bookId', book.id);
+        }
       }
-    },
-    title: {
-      type: graphql.GraphQLString,
-      resolve(book) {
-        return book.title;
-      }
-    },
-    author: {
-      type: graphql.GraphQLString,
-      resolve(book) {
-        return book.author;
-      }
-    },
-    publishedYear: {
-      type: graphql.GraphQLInt,
-      resolve(book) {
-        return book.publishedYear;
-      }
-    },
-    fiction: {
-      type: graphql.GraphQLBoolean,
-      resolve(book) {
-        return book.fiction;
-      }
-    },
+    }
   }
 });
 
@@ -74,6 +82,12 @@ const BookType = new graphql.GraphQLObjectType({
 const HasReadType = new graphql.GraphQLObjectType({
   name: 'HasRead',
   fields: {
+    user: {
+      type: UserType,
+      resolve(hasRead) {
+        return knex('user').where('id', hasRead.userId).first();
+      }
+    },
     book: {
       type: BookType,
       resolve(hasRead) {
@@ -101,8 +115,19 @@ const queryType = new graphql.GraphQLObjectType({
     },
     books: {
       type: new graphql.GraphQLList(BookType),
-      resolve() {
-        return knex('book');
+      args: {
+        fiction: {
+          type: graphql.GraphQLBoolean
+        }
+      },
+      resolve(root, args) {
+        let query = knex('book');
+
+        if (args.fiction != null) {
+          query = query.where('fiction', args.fiction);
+        }
+
+        return query;
       }
     },
   }
