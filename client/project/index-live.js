@@ -23,6 +23,7 @@ const queryRepoList = `
       totalCount
       nodes {
         name
+        viewerHasStarred
         openIssues: issues(states: OPEN) {
           totalCount
         }
@@ -79,9 +80,10 @@ $(window).ready(function() {
         if (repo.ref) {
           commits = repo.ref.target.history.totalCount;
         }
+        const star = repo.viewerHasStarred ? fullStar : emptyStar;
         const card = `
         <div>
-        <h3>${repo.name}</h3>
+        <h3>${repo.name} <span class="star">${star}</span></h3>
         <p>${repo.openIssues.totalCount} open issues</p>
         <p>${repo.openPRs.totalCount} open pull requests</p>
         <p>${commits} commits</p>
