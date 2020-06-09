@@ -105,6 +105,10 @@ $(window).ready(function() {
       }
       repos.nodes.forEach((repo) => {
         const star = repo.starred? fullStar : emptyStar;
+        let commits = 0;
+        if (repo.ref) {
+          commits = repo.ref.target.history.totalCount;
+        }
         const card = `
         <h3>
           ${repo.name}
@@ -112,7 +116,7 @@ $(window).ready(function() {
         </h3>
         <p>${repo.pullRequests.totalCount} open PRs</p>
         <p>${repo.issues.totalCount} open issues</p>
-        <p>${repo.ref.target.history.totalCount} commits</p>
+        <p>${commits} commits</p>
         `;
         $("ul.repos").append(`<li><div>${card}</div></li>`)
       });
