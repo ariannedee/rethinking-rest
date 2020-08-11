@@ -19,14 +19,21 @@ const queryRepoList = `
 {
   viewer {
     name
-    repositories (first: 12) {
+    repositories(first: 12, orderBy: {field: CREATED_AT, direction: DESC}) {
       totalCount
       nodes {
         name
+        openIssues: issues {
+          totalCount
+        }
+        openPRs: pullRequests {
+          totalCount
+        }
+        ... commitFragment
       }
     }
   }
-}`;
+}` + commitFragment;
 
 let mutationAddStar;
 
@@ -64,9 +71,16 @@ $(window).ready(function() {
       $('ul.repos').empty();
     }
     repos.nodes.forEach((repo) => {
+      let numCommits = 0;
+      if (repo.ref) {
+        numCommits = repo.ref.target.history.totalCount;
+      }
       const li = `
       <li>
         <h3>${repo.name}</h3>
+        <p>${repo.openIssues.totalCount} open issues</p>
+        <p>${repo.openPRs.totalCount} open PRs</p>
+        <p>${numCommits} commits</p>
       </li>`;
       $('ul.repos').append(li);
     });
