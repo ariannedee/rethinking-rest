@@ -1,6 +1,11 @@
 import graphene
 import graphene_django
 from django.contrib.auth.backends import UserModel
+from .models import Book
+
+class BookType(graphene_django.DjangoObjectType):
+    class Meta:
+        model = Book
 
 
 class UserType(graphene_django.DjangoObjectType):
@@ -16,9 +21,13 @@ class UserType(graphene_django.DjangoObjectType):
 
 class Query(graphene.ObjectType):
     users = graphene.List(UserType)
+    books = graphene.List(BookType)
 
     def resolve_users(self, info):
         return UserModel.objects.all()
+
+    def resolve_books(self, info):
+        return Book.objects.all()
 
 
 schema = graphene.Schema(query=Query)
