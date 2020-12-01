@@ -28,6 +28,13 @@ const UserType = new graphql.GraphQLObjectType({
         resolve(user) {
           return knex('hasRead').where('userId', user.id);
         }
+      },
+      avgRating: {
+        type: graphql.GraphQLFloat,
+        async resolve(user) {
+          let q = await knex('hasRead').where('userId', user.id).avg('rating as avg__rating').first();
+          return q['avg__rating'];
+        }
       }
     }
   }
