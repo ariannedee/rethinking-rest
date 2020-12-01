@@ -1,14 +1,37 @@
 const graphql = require('graphql');
-const { __esModule } = require('graphql/graphql');
+const knex = require('../db');
+
+const UserType = new graphql.GraphQLObjectType({
+  name: 'User',
+  fields: {
+    id: {
+      type: graphql.GraphQLID,
+      resolve(user) {
+        return user.id;
+      }
+    },
+    username: {
+      type: graphql.GraphQLString,
+      resolve(user) {
+        return user.username;
+      }
+    },
+    isAdmin: {
+      type: graphql.GraphQLBoolean,
+      resolve(user) {
+        return user.role == 'admin';
+      }
+    }
+  }
+});
 
 const queryType = new graphql.GraphQLObjectType({
   name: 'Query',
-  description: 'The root query',
   fields: {
-    hello: {
-      type: graphql.GraphQLString,
-      resolve () {
-        return 'world';
+    users: {
+      type: graphql.GraphQLList(UserType),
+      resolve (root) {
+        return knex('user');
       }
     }
   }
