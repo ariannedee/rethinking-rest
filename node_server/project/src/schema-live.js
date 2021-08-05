@@ -29,7 +29,17 @@ const UserType = new graphql.GraphQLObjectType({
         resolve(user) {
           return knex('hasRead').where('userId', user.id);
         }
-      }
+      },
+      averageRating: {
+        type: graphql.GraphQLFloat,
+        async resolve(user) {
+            let query = await knex('hasRead')
+            .where('userId', user.id)
+            .avg('rating as avg_rating')
+            .first();
+            return query['avg_rating']
+        }
+    }
     }
   }
 });
@@ -37,37 +47,45 @@ const UserType = new graphql.GraphQLObjectType({
 const BookType = new graphql.GraphQLObjectType({
   name: 'Book',
   description: 'A book',
-  fields: {
-    id: {
-      type: graphql.GraphQLID,
-      resolve(book) {
-        return book.id;
+  fields: () => {
+    return {
+      id: {
+        type: graphql.GraphQLID,
+        resolve(book) {
+          return book.id;
+        }
+      },
+      title: {
+        type: graphql.GraphQLString,
+        resolve(book) {
+          return book.title;
+        }
+      },
+      author: {
+        type: graphql.GraphQLString,
+        resolve(book) {
+          return book.author;
+        }
+      },
+      fiction: {
+        type: graphql.GraphQLBoolean,
+        resolve(book) {
+          return book.fiction;
+        }
+      },
+      publishedYear: {
+        type: graphql.GraphQLInt,
+        resolve(book) {
+          return book.publishedYear;
+        }
+      },
+      readBy: {
+        type: graphql.GraphQLList(HasReadType),
+        resolve(book) {
+          return knex('hasRead').where('bookId', book.id);
+        }
       }
-    },
-    title: {
-      type: graphql.GraphQLString,
-      resolve(book) {
-        return book.title;
-      }
-    },
-    author: {
-      type: graphql.GraphQLString,
-      resolve(book) {
-        return book.author;
-      }
-    },
-    fiction: {
-      type: graphql.GraphQLBoolean,
-      resolve(book) {
-        return book.fiction;
-      }
-    },
-    publishedYear: {
-      type: graphql.GraphQLInt,
-      resolve(book) {
-        return book.publishedYear;
-      }
-    },
+    }
   }
 });
 
@@ -85,6 +103,12 @@ const HasReadType = new graphql.GraphQLObjectType({
       type: BookType,
       resolve(hasRead) {
         return knex('book').where('id', hasRead.bookId).first()
+      }
+    },
+    user: {
+      type: UserType,
+      resolve(hasRead) {
+        return knex('user').where('id', hasRead.userId).first();
       }
     }
   }
