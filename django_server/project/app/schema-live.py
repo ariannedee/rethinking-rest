@@ -1,13 +1,23 @@
 import graphene
+import graphene_django
 
-class QueryType(graphene.ObjectType):
-    hello = graphene.String(description="Hello world!")
+from django.contrib.auth.backends import UserModel
 
-    def resolve_hello(self, info):
-        return "world"
+class UserType(graphene_django.DjangoObjectType):
+    is_admin = graphene.Boolean()
+
+    def resolve_is_admin(self, info):
+        return self.is_staff
 
     class Meta:
-        description = "Query object"
+        model = UserModel
+        only_fields = ('id', 'username')
+
+class QueryType(graphene.ObjectType):
+    users = graphene.List(UserType)
+
+    def resolve_users(self, info):
+        return UserModel.objects.all()
 
 
 schema = graphene.Schema(query=QueryType)
