@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 
-django = ">=2.0.8"
+django = ">=3.2<4"
 "graphene-django" = "*"
 "django-filter" = "*"
 
@@ -14,4 +14,4 @@ django = ">=2.0.8"
 
 
 [requires]
-python_version = "3.6"
+python_version = "3.8"

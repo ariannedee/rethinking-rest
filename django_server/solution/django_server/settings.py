@@ -126,3 +126,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
