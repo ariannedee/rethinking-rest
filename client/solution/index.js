@@ -3,7 +3,16 @@ const emptyStar = "☆";
 
 const commitFragment = `
 fragment commitFragment on Repository {
-  ref(qualifiedName: "master") {
+  master: ref(qualifiedName: "master") {
+    target {
+      ... on Commit {
+        history {
+          totalCount
+        }
+      }
+    }
+  }
+  main: ref(qualifiedName: "main") {
     target {
       ... on Commit {
         history {
@@ -105,9 +114,11 @@ $(window).ready(function() {
       }
       repos.nodes.forEach((repo) => {
         const star = repo.starred? fullStar : emptyStar;
-        let commits = 0;
-        if (repo.ref) {
-          commits = repo.ref.target.history.totalCount;
+        let numCommits;
+        if (repo.main) {
+          numCommits = repo.main.target.history.totalCount;
+        } else {
+          numCommits = repo.master.target.history.totalCount;
         }
         const card = `
         <h3>
@@ -116,7 +127,7 @@ $(window).ready(function() {
         </h3>
         <p>${repo.pullRequests.totalCount} open PRs</p>
         <p>${repo.issues.totalCount} open issues</p>
-        <p>${commits} commits</p>
+        <p>${numCommits} commits</p>
         `;
         $("ul.repos").append(`<li><div>${card}</div></li>`)
       });
