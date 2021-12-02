@@ -28,7 +28,17 @@ const UserType = new graphql.GraphQLObjectType({
                 resolve(user) {
                     return knex('hasRead').where('userId', user.id);
                 }
-            }
+            },
+            avgRating: {
+                type: graphql.GraphQLFloat,
+                async resolve(user) {
+                    let query = await knex('hasRead')
+                    .where('userId', user.id)
+                    .avg('rating as avg_rating')
+                    .first();
+                    return query['avg_rating'];
+                }
+            },
         }
     }
 });
@@ -99,8 +109,17 @@ const queryType = new graphql.GraphQLObjectType({
         },
         books: {
             type: new graphql.GraphQLList(BookType),
-            resolve() {
-                return knex('book');
+            args: {
+                fiction: {
+                    type: graphql.GraphQLBoolean
+                }
+            },
+            resolve(root, args) {
+                let q = knex('book');
+                if (args.fiction != null) {
+                    q = q.where('fiction', args.fiction);
+                }
+                return q;
             }
         }
     }
