@@ -19,7 +19,11 @@ const queryRepoList = `
 {
   viewer {
     name
-    repositories(first:100) {
+    repositories(
+      first:100,
+      orderBy: {field: CREATED_AT, direction: DESC},
+      isFork: false
+    ) {
       totalCount
       nodes {
         name
@@ -47,7 +51,12 @@ function gqlRequest(query, variables, onSuccess) {
     },
     success: (response) => {
       console.log(response);
-      onSuccess(response.data);
+      if (response.errors) {
+        console.log(response.errors);
+      }
+      if (response.data) {
+        onSuccess(response.data);
+      }
     }
   })
 }
