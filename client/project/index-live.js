@@ -3,7 +3,16 @@ const emptyStar = "☆";
 
 const commitFragment = `
 fragment commitFragment on Repository {
-  ref(qualifiedName: "master") {
+  master: ref(qualifiedName: "master") {
+    target {
+      ... on Commit {
+        history {
+          totalCount
+        }
+      }
+    }
+  }
+  main: ref(qualifiedName: "main") {
     target {
       ... on Commit {
         history {
@@ -22,15 +31,22 @@ const queryRepoList = `
     repositories(
       first:100,
       orderBy: {field: CREATED_AT, direction: DESC},
-      isFork: false
+      isFork: false,
     ) {
       totalCount
       nodes {
         name
+        openIssues: issues(states: OPEN) {
+          totalCount
+        }
+        openPRs: pullRequests(states: OPEN) {
+          totalCount
+        }
+        ... commitFragment
       }
     }
   }
-}`;
+}` + commitFragment;
 
 let mutationAddStar;
 
@@ -75,8 +91,17 @@ $(window).ready(function() {
       $('ul.repos').empty();
     }
     repos.nodes.forEach((repo) => {
+      let numCommits = 'N/A';
+      if (repo.main) {
+        numCommits = repo.main.target.history.totalCount;
+      } else if (repo.master) {
+        numCommits = repo.master.target.history.totalCount;
+      }
       const card = `<li>
       <h3>${repo.name}</h3>
+      <p>${repo.openIssues.totalCount} open issues</p>
+      <p>${repo.openPRs.totalCount} open PRs</p>
+      <p>${numCommits} commits</p>
       </li>`;
       $('ul.repos').append(card);
     });
