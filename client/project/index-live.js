@@ -22,16 +22,32 @@ let mutationAddStar;
 let mutationRemoveStar;
 
 function gqlRequest(query, variables, onSuccess) {
-    // MAKE GRAPHQL REQUEST
-
+  // MAKE GRAPHQL REQUEST
+  $.post({
+    url: "https://api.github.com/graphql",
+    contentType: "application/json",
+    headers: {Authorization: `bearer ${env.GITHUB_PERSONAL_ACCESS_TOKEN}`},
+    data: JSON.stringify({
+      query: query,
+      variables: variables
+    }),
+    error: (response) => {
+      console.log(response);
+    },
+    success: (response) => {
+      onSuccess(response.data);
+    }
+  })
 }
 
 function starHandler(element) {
-    // STAR OR UNSTAR REPO BASED ON ELEMENT STATE
+  // STAR OR UNSTAR REPO BASED ON ELEMENT STATE
 
 }
 
-$(window).ready(function () {
-    // GET NAME AND REPOSITORIES FOR VIEWER
-
+$(window).ready(function() {
+  // GET NAME AND REPOSITORIES FOR VIEWER
+  gqlRequest("{viewer{name}}", null, (data) => {
+    $('header h2').text(`Hello ${data.viewer.name}`);
+  });
 });
