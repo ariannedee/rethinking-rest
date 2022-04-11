@@ -3,7 +3,16 @@ const emptyStar = "☆";
 
 const commitFragment = `
 fragment commitFragment on Repository {
-  ref(qualifiedName: "master") {
+  master: ref(qualifiedName: "master") {
+    target {
+      ... on Commit {
+        history {
+          totalCount
+        }
+      }
+    }
+  }
+  main: ref(qualifiedName: "main") {
     target {
       ... on Commit {
         history {
