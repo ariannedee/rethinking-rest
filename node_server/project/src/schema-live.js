@@ -66,6 +66,13 @@ const BookType = new graphql.GraphQLObjectType({
       resolve(book) {
         return book.publishedYear;
       }
+    },
+    averageRating: {
+      type: graphql.GraphQLFloat,
+      async resolve(book) {
+        const query = await knex('hasRead').where('bookId', book.id).avg('rating as avg_rating').first();
+        return query['avg_rating']
+      }
     }
   }
 });
