@@ -24,23 +24,62 @@ fragment commitFragment on Repository {
 }
 `;
 
-let queryRepoList;
+const queryRepoList = `
+{ 
+  viewer { 
+    name
+    repositories(first: 100) {
+      totalCount
+      nodes {
+        name
+      }
+    }
+  }
+}`;
 
 let mutationAddStar;
 
 let mutationRemoveStar;
 
 function gqlRequest(query, variables, onSuccess) {
-    // MAKE GRAPHQL REQUEST
-
+  $.post({
+    url: 'https://api.github.com/graphql',
+    contentType: 'application/json',
+    headers: {Authorization: `bearer ${env.GITHUB_PERSONAL_ACCESS_TOKEN}`},
+    data: JSON.stringify({
+      query: query,
+      variables: variables
+    }),
+    success: (response) => {
+      if (response.errors) {
+        console.log(response.errors);
+      } else {
+        onSuccess(response.data);
+      }
+    },
+    error: (response) => {
+      console.log(response);
+    }
+  });
 }
 
 function starHandler(element) {
-    // STAR OR UNSTAR REPO BASED ON ELEMENT STATE
+  // STAR OR UNSTAR REPO BASED ON ELEMENT STATE
 
 }
 
-$(window).ready(function () {
-    // GET NAME AND REPOSITORIES FOR VIEWER
-
+$(window).ready(function() {
+  gqlRequest(queryRepoList, {}, (data) => {
+    $('header h2').text(`Hello ${data.viewer.name}`);
+    const repos = data.viewer.repositories;
+    if (repos.totalCount > 0) {
+      $('ul.repos').empty();
+    }
+    repos.nodes.forEach((repo) => {
+      const card = `<li>
+        <h3>${repo.name}</h3>
+      </li>`;
+      $('ul.repos').append(card);
+    })
+  });
 });
