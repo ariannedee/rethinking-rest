@@ -113,8 +113,17 @@ const queryType = new graphql.GraphQLObjectType({
     },
     books: {
       type: graphql.GraphQLList(BookType),
+      args: {
+        fiction: {
+          type: graphql.GraphQLBoolean
+        }
+      },
       resolve(root, args, context, info) {
-        return knex('book');
+        let q = knex('book');
+        if (args.fiction !== undefined) {
+          q = q.where('fiction', args.fiction);
+        }
+        return q;
       }
     }
   }
