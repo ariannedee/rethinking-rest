@@ -35,10 +35,17 @@ query ($username: String!) {
       totalCount
       nodes {
         name
+        openIssues: issues (states: OPEN) {
+          totalCount
+        }
+        openPRs: pullRequests (states: OPEN) {
+          totalCount
+        }
+        ... commitFragment
       }
     }
   }
-}`;
+}` + commitFragment;
 
 let mutationAddStar;
 
@@ -83,6 +90,8 @@ $(window).ready(function() {
     repos.nodes.forEach((repo) => {
       const card = `<li>
       <h3>${repo.name}</h3>
+      <p>${repo.openIssues.totalCount} open issues</p>
+      <p>${repo.openPRs.totalCount} open PRs</p>
       </li>`;
       $('ul.repos').append(card);
     })
