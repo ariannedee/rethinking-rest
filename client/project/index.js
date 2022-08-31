@@ -31,21 +31,7 @@ let mutationAddStar;
 let mutationRemoveStar;
 
 function gqlRequest(query, variables, onSuccess) {
-  $.post({
-    url: 'https://api.github.com/graphql',
-    contentType: 'application/json',
-    headers: {Authorization: `bearer ${env.GITHUB_PERSONAL_ACCESS_TOKEN}`},
-    data: JSON.stringify({
-      query: query,
-      variables: variables
-    }),
-    success: (response) => {
-      onSuccess(response.data);
-    },
-    error: (response) => {
-      console.log(response);
-    }
-  });
+  // MAKE GRAPHQL REQUEST
 }
 
 function starHandler(element) {
@@ -54,7 +40,6 @@ function starHandler(element) {
 }
 
 $(window).ready(function() {
-  gqlRequest('{viewer{name}}', {}, (data) => {
-    $('header h2').text(`Hello ${data.viewer.name}`);
-  });
+  // GET NAME AND REPOSITORIES FOR VIEWER
+
 });
