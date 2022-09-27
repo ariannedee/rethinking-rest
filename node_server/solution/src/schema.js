@@ -2,7 +2,7 @@ const graphql = require('graphql');
 const knex = require('../db');
 const {readBook} = require('./models');
 
-const UserType = new graphql.GraphQLObjectType({
+const userType = new graphql.GraphQLObjectType({
   name: 'User',
   description: 'This represents a User',
   fields: () => {
@@ -26,26 +26,16 @@ const UserType = new graphql.GraphQLObjectType({
         }
       },
       booksRead: {
-        type: graphql.GraphQLList(HasReadType),
+        type: graphql.GraphQLList(hasReadType),
         resolve(user) {
           return knex('hasRead').where('userId', user.id);
-        }
-      },
-      averageRating: {
-        type: graphql.GraphQLFloat,
-        async resolve(user) {
-          let query = await knex('hasRead')
-            .where('userId', user.id)
-            .avg('rating as avg_rating')
-            .first();
-          return query['avg_rating']
         }
       }
     }
   }
 });
 
-const BookType = new graphql.GraphQLObjectType({
+const bookType = new graphql.GraphQLObjectType({
   name: 'Book',
   fields: () => {
     return {
@@ -80,7 +70,7 @@ const BookType = new graphql.GraphQLObjectType({
         }
       },
       readBy: {
-        type: graphql.GraphQLList(HasReadType),
+        type: graphql.GraphQLList(hasReadType),
         resolve(book) {
           return knex('hasRead').where('bookId', book.id);
         }
@@ -92,14 +82,14 @@ const BookType = new graphql.GraphQLObjectType({
             .where('bookId', book.id)
             .avg('rating as avg_rating')
             .first();
-          return query['avg_rating']
+          return Math.round(query['avg_rating'] * 10) / 10;
         }
       }
     }
   }
 });
 
-const HasReadType = new graphql.GraphQLObjectType({
+const hasReadType = new graphql.GraphQLObjectType({
   name: 'HasRead',
   description: 'This represents a user who has read a book and given it a rating (optional)',
   fields: {
@@ -110,13 +100,13 @@ const HasReadType = new graphql.GraphQLObjectType({
       }
     },
     book: {
-      type: BookType,
+      type: bookType,
       resolve(hasRead) {
         return knex('book').where('id', hasRead.bookId).first();
       }
     },
     user: {
-      type: UserType,
+      type: userType,
       resolve(hasRead) {
         return knex('user').where('id', hasRead.userId).first();
       }
@@ -139,7 +129,7 @@ const queryType = new graphql.GraphQLObjectType({
   name: 'Query',
   fields: {
     users: {
-      type: graphql.GraphQLList(UserType),
+      type: graphql.GraphQLList(userType),
       description: 'A list of users',
       args: paginationArgs,
       resolve(root, args) {
@@ -157,7 +147,7 @@ const queryType = new graphql.GraphQLObjectType({
       }
     },
     books: {
-      type: graphql.GraphQLList(BookType),
+      type: graphql.GraphQLList(bookType),
       args: {
         fiction: {
           type: graphql.GraphQLBoolean,
@@ -182,7 +172,7 @@ const queryType = new graphql.GraphQLObjectType({
       }
     },
     user: {
-      type: UserType,
+      type: userType,
       args: {
         id: {
           type: graphql.GraphQLNonNull(graphql.GraphQLInt)
@@ -193,7 +183,7 @@ const queryType = new graphql.GraphQLObjectType({
       }
     },
     book: {
-      type: BookType,
+      type: bookType,
       args: {
         id: {
           type: graphql.GraphQLNonNull(graphql.GraphQLInt)
@@ -211,7 +201,7 @@ const mutationType = new graphql.GraphQLObjectType({
   fields: () => {
     return {
       readBook: {
-        type: HasReadType,
+        type: hasReadType,
         description: 'Read and rate (optional) a book',
         args: {
           user: {

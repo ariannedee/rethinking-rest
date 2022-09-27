@@ -8,11 +8,6 @@ from .models import Book, HasRead, read_book
 
 class UserType(graphene_django.DjangoObjectType):
     is_staff = graphene.Boolean(name='isAdmin')
-    average_rating = graphene.Float()
-
-    def resolve_average_rating(self, info):
-        query = self.books_read.all().aggregate(Avg('rating'))
-        return query['rating__avg']
 
     class Meta:
         model = UserModel
@@ -24,7 +19,7 @@ class BookType(graphene_django.DjangoObjectType):
 
     def resolve_average_rating(self, info):
         query = self.read_by.all().aggregate(Avg('rating'))
-        return query['rating__avg']
+        return round(query['rating__avg'], 1)
 
     class Meta:
         model = Book
