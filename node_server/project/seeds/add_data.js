@@ -8,10 +8,10 @@ exports.seed = function(knex, Promise) {
         .then(function () {
           // Inserts seed entries
           return knex('user').insert([
-            {id: 1, email: 'admin@test.com', username: 'admin', password: 'password', 'role': 'admin'},
-            {id: 2, email: 'me@test.com', username: 'me', password: 'password', 'role': 'user'},
-            {id: 3, email: 'friend1@test.com', username: 'friend1', password: 'password', 'role': 'user'},
-            {id: 4, email: 'friend2@test.com', username: 'friend2', password: 'password', 'role': 'user'},
+            {id: 1, email: 'admin@test.com', username: 'admin', password: 'password', role: 'admin'},
+            {id: 2, email: 'me@test.com', username: 'me', password: 'password', role: 'user'},
+            {id: 3, email: 'friend1@test.com', username: 'friend1', password: 'password', role: 'user'},
+            {id: 4, email: 'friend2@test.com', username: 'friend2', password: 'password', role: 'user'},
           ])
           .then(function () {
             return knex('book').insert([
@@ -38,11 +38,21 @@ exports.seed = function(knex, Promise) {
             ])
             .then(function() {
               return knex('hasRead').insert([
-                {userId: 2, bookId: 17, rating: 9},
+                {userId: 2, bookId: 1, rating: 9},
+                {userId: 2, bookId: 2, rating: 10},
+                {userId: 2, bookId: 3, rating: 6},
+                {userId: 2, bookId: 4, rating: 7},
+                {userId: 2, bookId: 6, rating: 9},
                 {userId: 2, bookId: 7, rating: 8},
-                {userId: 1, bookId: 1, rating: 7},
+                {userId: 1, bookId: 1, rating: 10},
+                {userId: 1, bookId: 2, rating: 8},
+                {userId: 1, bookId: 5, rating: 7},
+                {userId: 3, bookId: 3, rating: 9},
                 {userId: 3, bookId: 7, rating: 10},
                 {userId: 3, bookId: 20, rating: 6},
+                {userId: 1, bookId: 20, rating: 9},
+                {userId: 4, bookId: 1, rating: 9},
+                {userId: 4, bookId: 7, rating: 8},
                 {userId: 4, bookId: 12, rating: 7}
               ]);
             });
