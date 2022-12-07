@@ -24,14 +24,50 @@ fragment commitFragment on Repository {
 }
 `;
 
-let queryRepoList;
+const queryRepoList = `query ($username: String!) {
+  user(login: $username) {
+    name
+    repositories(first: 100, orderBy: {field: CREATED_AT, direction: DESC}) {
+      totalCount
+      nodes {
+        name
+        openIssues: issues(states: OPEN) {
+          totalCount
+        }
+        openPRs: pullRequests(states: OPEN) {
+          totalCount
+        }
+        ... commitFragment
+      }
+    }
+  }
+}` + commitFragment;
 
 let mutationAddStar;
 
 let mutationRemoveStar;
 
 function gqlRequest(query, variables, onSuccess) {
-  // MAKE GRAPHQL REQUEST
+  $.post({
+    url: "https://api.github.com/graphql",
+    contentType: "application/json",
+    headers: {Authorization: `bearer ${env.GITHUB_PERSONAL_ACCESS_TOKEN}`},
+    data: JSON.stringify({
+      query: query,
+      variables: variables
+    }),
+    success: (response) => {
+      if (response.errors) {
+        console.log(response.errors);
+      }
+      if (response.data) {
+        onSuccess(response.data);
+      }
+    },
+    error: (error) => {
+      console.log(error);
+    }
+  });
 }
 
 function starHandler(element) {
@@ -41,5 +77,27 @@ function starHandler(element) {
 
 $(window).ready(function() {
   // GET NAME AND REPOSITORIES FOR VIEWER
-
+  gqlRequest(queryRepoList, {username: "ariannedee"}, (data) => {
+    console.log(data);
+    $("h2").text(`Hello ${data.user.name}`);
+    const repos = data.user.repositories;
+    if (repos.totalCount > 0) {
+      $("ul.repos").empty();
+    }
+    repos.nodes.forEach((repo) => {
+      let commitCount;
+      if (repo.main) {
+        commitCount = repo.main.target.history.totalCount;
+      } else {
+        commitCount = repo.master.target.history.totalCount;
+      }
+      const card = `<li>
+      <h3>${repo.name}</h3>
+      <p>${repo.openIssues.totalCount} open issues</p>
+      <p>${repo.openPRs.totalCount} open PRs</p>
+      <p>${commitCount} commits</p>
+      </li>`;
+      $("ul.repos").append(card);
+    });
+  });
 });
