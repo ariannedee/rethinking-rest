@@ -35,35 +35,43 @@ const userType = new graphql.GraphQLObjectType({
 
 const bookType = new graphql.GraphQLObjectType({
   name: 'Book',
-  fields: {
-    id: {
-      type: graphql.GraphQLNonNull(graphql.GraphQLID),
-      resolve(book) {
-        return book.id;
-      }
-    },
-    title: {
-      type: graphql.GraphQLString,
-      resolve(book) {
-        return book.title;
-      }
-    },
-    author: {
-      type: graphql.GraphQLString,
-      resolve(book) {
-        return book.author;
-      }
-    },
-    publishedYear: {
-      type: graphql.GraphQLInt,
-      resolve(book) {
-        return book.publishedYear;
-      }
-    },
-    fiction: {
-      type: graphql.GraphQLBoolean,
-      resolve(book) {
-        return book.fiction;
+  fields: () => {
+    return {
+      id: {
+        type: graphql.GraphQLNonNull(graphql.GraphQLID),
+        resolve(book) {
+          return book.id;
+        }
+      },
+      title: {
+        type: graphql.GraphQLString,
+        resolve(book) {
+          return book.title;
+        }
+      },
+      author: {
+        type: graphql.GraphQLString,
+        resolve(book) {
+          return book.author;
+        }
+      },
+      publishedYear: {
+        type: graphql.GraphQLInt,
+        resolve(book) {
+          return book.publishedYear;
+        }
+      },
+      fiction: {
+        type: graphql.GraphQLBoolean,
+        resolve(book) {
+          return book.fiction;
+        }
+      },
+      readBy: {
+        type: graphql.GraphQLList(hasReadType),
+        resolve(book) {
+          return knex('hasRead').where('bookId', book.id);
+        }
       }
     }
   }
@@ -82,6 +90,12 @@ const hasReadType = new graphql.GraphQLObjectType({
       type: bookType,
       resolve(hasRead) {
         return knex('book').where('id', hasRead.bookId).first();
+      }
+    },
+    user: {
+      type: userType,
+      resolve(hasRead) {
+        return knex('user').where('id', hasRead.userId).first();
       }
     }
   }
