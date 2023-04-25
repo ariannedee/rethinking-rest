@@ -25,6 +25,42 @@ const userType = new graphql.GraphQLObjectType({
   }
 });
 
+const bookType = new graphql.GraphQLObjectType({
+  name: 'Book',
+  fields: {
+    id: {
+      type: graphql.GraphQLNonNull(graphql.GraphQLID),
+      resolve(book) {
+        return book.id;
+      }
+    },
+    title: {
+      type: graphql.GraphQLString,
+      resolve(book) {
+        return book.title;
+      }
+    },
+    author: {
+      type: graphql.GraphQLString,
+      resolve(book) {
+        return book.author;
+      }
+    },
+    publishedYear: {
+      type: graphql.GraphQLInt,
+      resolve(book) {
+        return book.publishedYear;
+      }
+    },
+    fiction: {
+      type: graphql.GraphQLBoolean,
+      resolve(book) {
+        return book.fiction;
+      }
+    }
+  }
+});
+
 const queryType = new graphql.GraphQLObjectType({
   name: 'Query',
   fields: {
@@ -32,6 +68,12 @@ const queryType = new graphql.GraphQLObjectType({
       type: graphql.GraphQLList(userType),
       resolve() {
         return knex('user');
+      }
+    },
+    books: {
+      type: graphql.GraphQLList(bookType),
+      resolve() {
+        return knex('book');
       }
     }
   }
