@@ -1,12 +1,37 @@
 const graphql = require('graphql');
+const knex = require('../db');
+
+const userType = new graphql.GraphQLObjectType({
+  name: 'User',
+  fields: {
+    id: {
+      type: graphql.GraphQLNonNull(graphql.GraphQLID),
+      resolve(user) {
+        return user.id;
+      }
+    },
+    username: {
+      type: graphql.GraphQLString,
+      resolve(user) {
+        return user.username;
+      }
+    },
+    isAdmin: {
+      type: graphql.GraphQLBoolean,
+      resolve(user) {
+        return user.role === "admin";
+      }
+    }
+  }
+});
 
 const queryType = new graphql.GraphQLObjectType({
   name: 'Query',
   fields: {
-    hello: {
-      type: graphql.GraphQLString,
+    users: {
+      type: graphql.GraphQLList(userType),
       resolve() {
-        return 'world';
+        return knex('user');
       }
     }
   }
