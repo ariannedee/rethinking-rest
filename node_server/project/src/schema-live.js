@@ -35,35 +35,46 @@ const userType = new graphql.GraphQLObjectType({
 
 const bookType = new graphql.GraphQLObjectType({
   name: 'Book',
-  fields: {
-    id: {
-      type: graphql.GraphQLID,
-      resolve(book) {
-        return book.id;
-      }
-    },
-    title: {
-      type: graphql.GraphQLString,
-      resolve(book) {
-        return book.title;
-      }
-    },
-    author: {
-      type: graphql.GraphQLString,
-      resolve(book) {
-        return book.author;
-      }
-    },
-    isFiction: {
-      type: graphql.GraphQLBoolean,
-      resolve(book) {
-        return book.fiction;
-      }
-    },
-    publishedYear: {
-      type: graphql.GraphQLInt,
-      resolve(book) {
-        return book.publishedYear;
+  fields: () => {
+    return {
+      id: {
+        type: graphql.GraphQLID,
+        resolve(book) {
+          return book.id;
+        }
+      },
+      title: {
+        type: graphql.GraphQLString,
+        resolve(book) {
+          return book.title;
+        }
+      },
+      author: {
+        type: graphql.GraphQLString,
+        resolve(book) {
+          return book.author;
+        }
+      },
+      isFiction: {
+        type: graphql.GraphQLBoolean,
+        resolve(book) {
+          return book.fiction;
+        }
+      },
+      publishedYear: {
+        type: graphql.GraphQLInt,
+        resolve(book) {
+          return book.publishedYear;
+        }
+      },
+      averageRating: {
+        type: graphql.GraphQLFloat,
+        async resolve(book) {
+          let query = await knex('hasRead').where('bookId', book.id)
+          .avg('rating as avg_rating')
+          .first();
+          return Math.round(query['avg_rating'] * 10) / 10;
+        }
       }
     }
   }
