@@ -2,7 +2,7 @@ import graphene
 
 import graphene_django
 from django.contrib.auth.backends import UserModel
-from .models import Book
+from .models import Book, HasRead
 
 
 class UserType(graphene_django.DjangoObjectType):
@@ -13,7 +13,7 @@ class UserType(graphene_django.DjangoObjectType):
 
     class Meta:
         model = UserModel
-        only_fields = ('id', 'username')
+        only_fields = ('id', 'username', 'books_read')
 
 
 class BookType(graphene_django.DjangoObjectType):
@@ -25,6 +25,11 @@ class BookType(graphene_django.DjangoObjectType):
     class Meta:
         model = Book
         exclude_fields = ('fiction', )
+
+
+class HasReadType(graphene_django.DjangoObjectType):
+    class Meta:
+        model = HasRead
 
 
 class QueryType(graphene.ObjectType):
