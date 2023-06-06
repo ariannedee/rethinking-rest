@@ -24,7 +24,25 @@ fragment commitFragment on Repository {
 }
 `;
 
-let queryRepoList;
+const queryRepoList = `{
+  viewer: user(login: "ariannedee") {
+    name
+    repositories(first: 12, orderBy: {field: CREATED_AT, direction: DESC}) {
+      totalCount
+      nodes {
+        id
+        name
+        openIssues: issues(states: OPEN) {
+          totalCount
+        }
+        openPRs: pullRequests(states: OPEN) {
+          totalCount
+        }
+        ... commitFragment
+      }
+    }
+  }
+}` + commitFragment;
 
 let mutationAddStar;
 
@@ -43,6 +61,7 @@ function gqlRequest(query, variables, onSuccess) {
       console.log(error);
     },
     success: (response) => {
+      console.log(response.data);
       onSuccess(response.data);
     }
   });
@@ -54,7 +73,26 @@ function starHandler(element) {
 }
 
 $(window).ready(function() {
-  gqlRequest("{viewer{name}}", null, (data) => {
-    console.log(data);
+  gqlRequest(queryRepoList, null, (data) => {
+    $("header h2").text(`Hello ${data.viewer.name}`);
+    const repos = data.viewer.repositories;
+    if (repos.totalCount > 0) {
+      $("ul.repos").empty();
+      repos.nodes.forEach((repo) => {
+        let numCommits = 0;
+        if (repo.main) {
+          numCommits = repo.main.target.history.totalCount;
+        } else if (repo.master) {
+          numCommits = repo.master.target.history.totalCount;
+        }
+        const card = `<li>
+        <h3>${repo.name}</h3>
+        <p>${repo.openIssues.totalCount} open issues</p>
+        <p>${repo.openPRs.totalCount} open PRs</p>
+        <p>${numCommits} commits</p>
+        </li>`;
+        $("ul.repos").append(card);
+      });
+    }
   });
 });
